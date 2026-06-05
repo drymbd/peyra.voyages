@@ -175,7 +175,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
     <div class="card">
       <div class="card-header"><i class="ti ti-user"></i><span>Client</span></div>
       <div class="field"><label>Prénom + Nom</label><input type="text" id="clientName" placeholder="ex : Marie Dupont"></div>
-      <div class="field"><label>Email <span style="color:#ef4444;font-size:9px">requis pour mail auto</span></label><input type="email" id="clientEmail" placeholder="ex : marie@email.com"></div>
+      <div class="field"><label>Email</label><input type="email" id="clientEmail" placeholder="ex : marie@email.com"></div>
       <div class="field"><label>Téléphone</label><input type="tel" id="clientPhone" placeholder="+33 6 12 34 56 78" oninput="detectNat()"></div>
       <div class="field"><label>Nationalité <span id="natTag" class="nat-tag" style="display:none"></span></label><input type="text" id="clientNat" placeholder="Détectée automatiquement"></div>
     </div>
@@ -436,7 +436,6 @@ function buildChecklist(){
   const items=[
     {ok:!!v('clientName'),label:'Nom client',val:v('clientName')||'⚠ manquant'},
     {ok:!!v('clientPhone'),label:'Téléphone',val:v('clientPhone')||'⚠ manquant'},
-    {ok:!!v('clientEmail'),label:'Email client',val:v('clientEmail')||'⚠ mail auto désactivé'},
     {ok:!!v('vehicleModel'),label:'Véhicule / activité',val:v('vehicleModel')||'⚠ manquant'},
     {ok:!!v('partenaire'),label:'Partenaire',val:PART_LABEL[v('partenaire')]||'⚠ À vérifier'},
     {ok:!!v('dateStart'),label:'Date début',val:v('dateStart')||'⚠ manquant'},
