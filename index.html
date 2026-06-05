@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -15,27 +17,23 @@
   --bg:#f0f4f8;--surface:#ffffff;
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:2rem}
-.app{max-width:480px;margin:0 auto;padding:0}
-
-/* HEADER */
+.app{max-width:480px;margin:0 auto}
 .header{background:var(--pd);padding:1.25rem 1.5rem 1.1rem;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
-.logo{width:42px;height:42px;background:var(--pb);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:white;flex-shrink:0;letter-spacing:-1px}
+.logo{width:42px;height:42px;background:var(--pb);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:white;flex-shrink:0}
 .header h1{font-size:16px;font-weight:600;color:white;letter-spacing:.04em}
 .header p{font-size:11px;color:rgba(255,255,255,.5);margin-top:1px}
-
-/* STEP BAR */
+.header-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.icon-btn{background:rgba(255,255,255,.1);border:none;border-radius:8px;padding:.4rem .6rem;cursor:pointer;color:white;font-size:14px;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;transition:background .15s}
+.icon-btn:hover{background:rgba(255,255,255,.2)}
+.icon-btn.connected{background:rgba(34,197,94,.2);color:#86efac}
 .step-bar{display:flex;gap:4px;padding:.9rem 1.5rem .6rem;background:var(--pd)}
 .sd{height:3px;flex:1;border-radius:99px;background:rgba(255,255,255,.15);transition:background .3s}
 .sd.active{background:rgba(255,255,255,.8)}
 .sd.done{background:var(--pb)}
-
-/* CARDS */
 .card{background:var(--surface);border-radius:var(--r);margin:1rem 1rem 0;overflow:hidden;border:.5px solid var(--pborder)}
 .card-header{padding:.7rem 1rem;background:var(--pl);border-bottom:.5px solid var(--pborder);display:flex;align-items:center;gap:8px}
 .card-header i{color:var(--pb);font-size:15px}
 .card-header span{font-size:11px;font-weight:600;color:var(--pd);letter-spacing:.05em;text-transform:uppercase}
-
-/* FIELDS */
 .field{padding:.65rem 1rem;border-bottom:.5px solid var(--pborder);position:relative}
 .field:last-child{border-bottom:none}
 .field label{display:block;font-size:10px;font-weight:600;color:var(--pg);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
@@ -45,11 +43,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 .field-row{display:grid;grid-template-columns:1fr 1fr}
 .field-row .field{border-right:.5px solid var(--pborder)}
 .field-row .field:last-child{border-right:none}
-
-/* DAYS BADGE */
 .days-badge{display:inline-flex;align-items:center;gap:5px;background:var(--pb);color:white;border-radius:99px;padding:4px 12px;font-size:12px;font-weight:600;margin:.5rem 1rem .25rem}
-
-/* TYPE GRID */
 .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:1rem}
 .type-btn{background:#f8fafc;border:1.5px solid var(--pborder);border-radius:10px;padding:.8rem .5rem;cursor:pointer;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'DM Sans',sans-serif}
 .type-btn i{font-size:24px;color:var(--pg);transition:color .15s}
@@ -58,8 +52,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 .type-btn.selected{border-color:var(--pb);background:var(--pl)}
 .type-btn.selected i{color:var(--pb)}
 .type-btn.selected span{color:var(--pd);font-weight:600}
-
-/* FINANCE CARD */
 .finance-card{background:var(--pd);border-radius:var(--r);margin:1rem 1rem 0;padding:1.1rem}
 .finance-title{font-size:10px;font-weight:600;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.9rem}
 .finance-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -69,57 +61,41 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 .fi.hi{background:var(--pb)}
 .fi.hi .fi-l{color:rgba(255,255,255,.7)}
 .finance-warn{background:rgba(245,158,11,.12);border:.5px solid rgba(245,158,11,.35);border-radius:8px;padding:.5rem .8rem;margin-top:10px;font-size:12px;color:#92400e;display:flex;align-items:center;gap:7px}
-
-/* NAT TAG */
 .nat-tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:500;background:var(--pl);color:var(--pb);margin-left:6px;vertical-align:middle}
-
-/* BUTTONS */
 .btn-main{display:flex;width:calc(100% - 2rem);margin:1rem 1rem 0;background:var(--pb);color:white;border:none;border-radius:var(--r);padding:.95rem;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;align-items:center;justify-content:center;gap:8px;transition:all .15s}
 .btn-main:hover{background:var(--pd)}
 .btn-main:disabled{opacity:.45;cursor:not-allowed}
+.btn-green{background:#16a34a}
+.btn-green:hover{background:#15803d}
 .btn-sec{display:flex;width:calc(100% - 2rem);margin:.75rem 1rem 0;background:transparent;color:var(--pb);border:1.5px solid var(--pb);border-radius:var(--r);padding:.75rem;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;align-items:center;justify-content:center;gap:8px;transition:all .15s}
 .btn-sec:hover{background:var(--pl)}
-
-/* CHECKLIST */
 .check-item{display:flex;align-items:flex-start;gap:9px;padding:.4rem 1rem;font-size:13px}
 .check-item i{font-size:16px;flex-shrink:0;margin-top:1px}
 .check-item.ok i{color:#22c55e}
 .check-item.warn i{color:#f59e0b}
 .check-item.ok span{color:#374151}
 .check-item.warn span{color:#92400e}
-
-/* RESULTS */
 .results-wrap{margin:1rem 1rem 0;border-radius:var(--r);overflow:hidden;border:.5px solid var(--pborder)}
 .tab-bar{display:flex;overflow-x:auto;background:var(--pl);border-bottom:.5px solid var(--pborder);scrollbar-width:none}
 .tab-bar::-webkit-scrollbar{display:none}
 .tab{flex-shrink:0;padding:.6rem .85rem;font-size:12px;font-weight:500;color:var(--pg);cursor:pointer;border-bottom:2.5px solid transparent;transition:all .15s;white-space:nowrap}
 .tab.active{color:var(--pb);border-bottom-color:var(--pb);background:white}
 .result-body{padding:1rem;font-size:12.5px;line-height:1.7;color:#1f2937;white-space:pre-wrap;font-family:'DM Mono',monospace;background:white;min-height:150px;max-height:380px;overflow-y:auto}
-
-/* PROGRESS */
 .progress-wrap{margin:1rem 1rem .25rem}
 .progress-bar{height:4px;background:var(--pl);border-radius:99px;overflow:hidden}
 .progress-fill{height:100%;background:var(--pb);border-radius:99px;transition:width .5s ease}
 .progress-label{font-size:12px;color:var(--pg);margin-top:.4rem;text-align:center}
-
-/* LOADING */
 .dots{display:flex;gap:5px;align-items:center;justify-content:center;padding:2.5rem}
 .dots span{width:7px;height:7px;border-radius:50%;background:var(--pb);opacity:.25;animation:pulse 1.2s ease-in-out infinite}
 .dots span:nth-child(2){animation-delay:.2s}
 .dots span:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
-
-/* COPY BTN */
-.copy-btn{display:flex;align-items:center;gap:6px;margin:.6rem 1rem 0;background:transparent;border:.5px solid var(--pborder);border-radius:8px;padding:.5rem .85rem;font-size:12px;color:var(--pg);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;width:auto}
+.copy-btn{display:flex;align-items:center;gap:6px;margin:.6rem 1rem 0;background:transparent;border:.5px solid var(--pborder);border-radius:8px;padding:.5rem .85rem;font-size:12px;color:var(--pg);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
 .copy-btn:hover{border-color:var(--pb);color:var(--pb)}
-
-/* SUCCESS BANNER */
 .success-banner{background:#dcfce7;border:.5px solid #86efac;border-radius:var(--r);margin:1rem 1rem 0;padding:.75rem 1rem;display:flex;align-items:center;gap:8px;font-size:13px;color:#166534;font-weight:500}
-
-.hidden{display:none!important}
-.mt1{margin-top:1rem}
-
-/* API KEY MODAL */
+.cal-status{background:#f0fdf4;border:.5px solid #86efac;border-radius:var(--r);margin:.75rem 1rem 0;padding:.75rem 1rem;font-size:13px;color:#166534;display:flex;align-items:center;gap:8px}
+.cal-status.error{background:#fef2f2;border-color:#fca5a5;color:#991b1b}
+.cal-status.loading{background:var(--pl);border-color:var(--pborder);color:var(--pb)}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
 .modal{background:white;border-radius:var(--r);padding:1.5rem;width:100%;max-width:380px}
 .modal h2{font-size:16px;font-weight:600;color:var(--pd);margin-bottom:.5rem}
@@ -128,6 +104,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 .modal input:focus{border-color:var(--pb)}
 .modal-note{font-size:11px;color:var(--pg);text-align:center;margin-top:.75rem}
 .modal-note a{color:var(--pb)}
+.hidden{display:none!important}
+.mt1{margin-top:1rem}
 </style>
 </head>
 <body>
@@ -136,7 +114,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 <div class="modal-overlay" id="apiModal">
   <div class="modal">
     <h2>Clé API Anthropic</h2>
-    <p>Pour générer les messages, entre ta clé API. Elle est sauvegardée uniquement dans ton navigateur.</p>
+    <p>Entre ta clé API pour activer la génération des messages. Elle est sauvegardée uniquement dans ton navigateur.</p>
     <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-...">
     <button class="btn-main" style="margin:0;width:100%" onclick="saveApiKey()">
       <i class="ti ti-check"></i> Confirmer
@@ -146,16 +124,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 </div>
 
 <div class="app">
-  <!-- HEADER -->
   <div class="header">
     <div class="logo">P</div>
     <div>
       <h1>PEYRA VOYAGE</h1>
       <p>Gestion des réservations · Zakynthos</p>
     </div>
-    <button onclick="document.getElementById('apiModal').style.display='flex'" style="margin-left:auto;background:rgba(255,255,255,.1);border:none;border-radius:8px;padding:.4rem .6rem;cursor:pointer;color:white;font-size:13px">
-      <i class="ti ti-key"></i>
-    </button>
+    <div class="header-actions">
+      <button class="icon-btn" id="btnGoogleAuth" onclick="handleGoogleAuth()">
+        <i class="ti ti-brand-google"></i> <span id="googleAuthLabel">Connecter</span>
+      </button>
+      <button class="icon-btn" onclick="document.getElementById('apiModal').style.display='flex'">
+        <i class="ti ti-key"></i>
+      </button>
+    </div>
   </div>
   <div class="step-bar">
     <div class="sd active" id="s1"></div>
@@ -164,167 +146,56 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
     <div class="sd" id="s4"></div>
   </div>
 
-  <!-- STEP 1 : TYPE -->
+  <!-- STEP 1 -->
   <div id="step1">
     <div class="card">
       <div class="card-header"><i class="ti ti-apps"></i><span>Type de réservation</span></div>
       <div class="type-grid">
-        <button class="type-btn" data-type="voiture" onclick="selectType(this)">
-          <i class="ti ti-car"></i><span>Voiture</span>
-        </button>
-        <button class="type-btn" data-type="quad" onclick="selectType(this)">
-          <i class="ti ti-motorbike"></i><span>Quad / Scooter</span>
-        </button>
-        <button class="type-btn" data-type="bateau" onclick="selectType(this)">
-          <i class="ti ti-sailboat"></i><span>Bateau</span>
-        </button>
-        <button class="type-btn" data-type="buggy_excursion" onclick="selectType(this)">
-          <i class="ti ti-map-2"></i><span>Excursion Buggy</span>
-        </button>
-        <button class="type-btn" data-type="transfert" onclick="selectType(this)">
-          <i class="ti ti-luggage"></i><span>Transfert</span>
-        </button>
-        <button class="type-btn" data-type="buggy_location" onclick="selectType(this)">
-          <i class="ti ti-steering-wheel"></i><span>Location Buggy</span>
-        </button>
+        <button class="type-btn" data-type="voiture" onclick="selectType(this)"><i class="ti ti-car"></i><span>Voiture</span></button>
+        <button class="type-btn" data-type="quad" onclick="selectType(this)"><i class="ti ti-motorbike"></i><span>Quad / Scooter</span></button>
+        <button class="type-btn" data-type="bateau" onclick="selectType(this)"><i class="ti ti-sailboat"></i><span>Bateau</span></button>
+        <button class="type-btn" data-type="buggy_excursion" onclick="selectType(this)"><i class="ti ti-map-2"></i><span>Excursion Buggy</span></button>
+        <button class="type-btn" data-type="transfert" onclick="selectType(this)"><i class="ti ti-luggage"></i><span>Transfert</span></button>
+        <button class="type-btn" data-type="buggy_location" onclick="selectType(this)"><i class="ti ti-steering-wheel"></i><span>Location Buggy</span></button>
       </div>
     </div>
-    <button class="btn-main" id="btnStep1" onclick="goStep(2)" disabled>
-      Continuer <i class="ti ti-arrow-right"></i>
-    </button>
+    <button class="btn-main" id="btnStep1" onclick="goStep(2)" disabled>Continuer <i class="ti ti-arrow-right"></i></button>
     <div style="height:1rem"></div>
   </div>
 
-  <!-- STEP 2 : FORM -->
+  <!-- STEP 2 -->
   <div id="step2" class="hidden">
-    <!-- CLIENT -->
     <div class="card">
       <div class="card-header"><i class="ti ti-user"></i><span>Client</span></div>
-      <div class="field">
-        <label>Prénom + Nom</label>
-        <input type="text" id="clientName" placeholder="ex : Marie Dupont">
-      </div>
-      <div class="field">
-        <label>Téléphone</label>
-        <input type="tel" id="clientPhone" placeholder="+33 6 12 34 56 78" oninput="detectNat()">
-      </div>
-      <div class="field">
-        <label>Nationalité <span id="natTag" class="nat-tag" style="display:none"></span></label>
-        <input type="text" id="clientNat" placeholder="Détectée automatiquement">
-      </div>
+      <div class="field"><label>Prénom + Nom</label><input type="text" id="clientName" placeholder="ex : Marie Dupont"></div>
+      <div class="field"><label>Téléphone</label><input type="tel" id="clientPhone" placeholder="+33 6 12 34 56 78" oninput="detectNat()"></div>
+      <div class="field"><label>Nationalité <span id="natTag" class="nat-tag" style="display:none"></span></label><input type="text" id="clientNat" placeholder="Détectée automatiquement"></div>
     </div>
-
-    <!-- DÉTAILS -->
     <div class="card">
       <div class="card-header"><i class="ti ti-settings"></i><span id="detailLabel">Détails véhicule</span></div>
-      <div class="field">
-        <label id="modelLabel">Modèle</label>
-        <input type="text" id="vehicleModel" placeholder="ex : Fiat Panda">
-      </div>
-      <div class="field" id="fieldPartenaire">
-        <label>Partenaire</label>
-        <select id="partenaire" onchange="onPartenaireChange()">
-          <option value="">— Sélectionner —</option>
-        </select>
-      </div>
-      <div class="field hidden" id="fieldBateauNom">
-        <label>Nom du bateau</label>
-        <select id="bateauNom">
-          <option value="">— Sélectionner —</option>
-        </select>
-      </div>
-      <div class="field hidden" id="fieldDureeH">
-        <label>Durée</label>
-        <input type="text" id="dureeH" placeholder="ex : 4h, demi-journée">
-      </div>
-      <div class="field hidden" id="fieldNbPax">
-        <label>Nombre de personnes</label>
-        <input type="number" id="nbPax" min="1" placeholder="ex : 4">
-      </div>
-      <div class="field hidden" id="fieldZone">
-        <label>Zone de navigation</label>
-        <select id="zone">
-          <option value="north_route">Nord — Blue Caves</option>
-          <option value="south_route">Sud — Navagio / Loggerhead</option>
-          <option value="full_tour">Tour complet</option>
-        </select>
-      </div>
-      <div class="field" id="fieldAssurance">
-        <label>Assurance</label>
-        <select id="assurance" onchange="updateFinance()">
-          <option value="basique">Basique (0€)</option>
-          <option value="complete_voiture">Complète voiture (9€/j)</option>
-          <option value="complete_quad">Complète quad / buggy (20€/j)</option>
-        </select>
-      </div>
+      <div class="field"><label id="modelLabel">Modèle</label><input type="text" id="vehicleModel" placeholder="ex : Fiat Panda"></div>
+      <div class="field" id="fieldPartenaire"><label>Partenaire</label><select id="partenaire" onchange="onPartenaireChange()"><option value="">— Sélectionner —</option></select></div>
+      <div class="field hidden" id="fieldBateauNom"><label>Nom du bateau</label><select id="bateauNom"><option value="">— Sélectionner —</option></select></div>
+      <div class="field hidden" id="fieldDureeH"><label>Durée</label><input type="text" id="dureeH" placeholder="ex : 4h, demi-journée"></div>
+      <div class="field hidden" id="fieldNbPax"><label>Nombre de personnes</label><input type="number" id="nbPax" min="1" placeholder="ex : 4"></div>
+      <div class="field hidden" id="fieldZone"><label>Zone de navigation</label><select id="zone"><option value="north_route">Nord — Blue Caves</option><option value="south_route">Sud — Navagio / Loggerhead</option><option value="full_tour">Tour complet</option></select></div>
+      <div class="field" id="fieldAssurance"><label>Assurance</label><select id="assurance" onchange="updateFinance()"><option value="basique">Basique (0€)</option><option value="complete_voiture">Complète voiture (9€/j)</option><option value="complete_quad">Complète quad / buggy (20€/j)</option></select></div>
     </div>
-
-    <!-- DATES -->
     <div class="card">
       <div class="card-header"><i class="ti ti-calendar"></i><span>Dates &amp; Lieu</span></div>
-      <div class="field-row">
-        <div class="field">
-          <label>Date début</label>
-          <input type="date" id="dateStart" oninput="calcJours()">
-        </div>
-        <div class="field">
-          <label>Heure</label>
-          <input type="time" id="heureStart" oninput="calcJours()">
-        </div>
-      </div>
-      <div id="retourRow">
-        <div class="field-row">
-          <div class="field">
-            <label>Date retour</label>
-            <input type="date" id="dateEnd" oninput="calcJours()">
-          </div>
-          <div class="field">
-            <label>Heure</label>
-            <input type="time" id="heureEnd" oninput="calcJours()">
-          </div>
-        </div>
-      </div>
-      <div id="daysBadgeWrap" class="hidden" style="padding:.6rem 1rem .25rem">
-        <div class="days-badge"><i class="ti ti-clock" style="font-size:13px"></i><span id="daysText">— jours</span></div>
-      </div>
-      <div class="field">
-        <label>Lieu prise en charge</label>
-        <select id="lieuStart" onchange="updateLieu()">
-          <option value="">— Sélectionner —</option>
-          <option value="aeroport">Aéroport de Zakynthos</option>
-          <option value="hotel">Hôtel</option>
-          <option value="port_nord">Port Nord (Redon)</option>
-          <option value="port_sud">Port Sud (Orestis)</option>
-          <option value="ks_storage">KS Storage (buggy)</option>
-        </select>
-      </div>
-      <div class="field hidden" id="fieldHotel">
-        <label>Nom de l'hôtel</label>
-        <input type="text" id="hotelName" placeholder="ex : Ionian Star Hotel">
-      </div>
-      <div class="field hidden" id="fieldVolAller">
-        <label>N° vol aller</label>
-        <input type="text" id="volAller" placeholder="ex : AF1234">
-      </div>
-      <div class="field hidden" id="fieldVolRetour">
-        <label>N° vol retour</label>
-        <input type="text" id="volRetour" placeholder="ex : AF1235">
-      </div>
+      <div class="field-row"><div class="field"><label>Date début</label><input type="date" id="dateStart" oninput="calcJours()"></div><div class="field"><label>Heure</label><input type="time" id="heureStart" oninput="calcJours()"></div></div>
+      <div id="retourRow"><div class="field-row"><div class="field"><label>Date retour</label><input type="date" id="dateEnd" oninput="calcJours()"></div><div class="field"><label>Heure</label><input type="time" id="heureEnd" oninput="calcJours()"></div></div></div>
+      <div id="daysBadgeWrap" class="hidden" style="padding:.6rem 1rem .25rem"><div class="days-badge"><i class="ti ti-clock" style="font-size:13px"></i><span id="daysText">— jours</span></div></div>
+      <div class="field"><label>Lieu prise en charge</label><select id="lieuStart" onchange="updateLieu()"><option value="">— Sélectionner —</option><option value="aeroport">Aéroport de Zakynthos</option><option value="hotel">Hôtel</option><option value="port_nord">Port Nord (Redon)</option><option value="port_sud">Port Sud (Orestis)</option><option value="ks_storage">KS Storage (buggy)</option></select></div>
+      <div class="field hidden" id="fieldHotel"><label>Nom de l'hôtel</label><input type="text" id="hotelName" placeholder="ex : Ionian Star Hotel"></div>
+      <div class="field hidden" id="fieldVolAller"><label>N° vol aller</label><input type="text" id="volAller" placeholder="ex : AF1234"></div>
+      <div class="field hidden" id="fieldVolRetour"><label>N° vol retour</label><input type="text" id="volRetour" placeholder="ex : AF1235"></div>
     </div>
-
-    <!-- FINANCIER -->
     <div class="card">
       <div class="card-header"><i class="ti ti-currency-euro"></i><span>Financier</span></div>
-      <div class="field">
-        <label>Prix partenaire (€)</label>
-        <input type="number" id="prixPartenaire" placeholder="ex : 175" oninput="updateFinance()">
-      </div>
-      <div class="field">
-        <label>Prix vente client (€)</label>
-        <input type="number" id="prixVente" placeholder="ex : 200" oninput="updateFinance()">
-      </div>
+      <div class="field"><label>Prix partenaire (€)</label><input type="number" id="prixPartenaire" placeholder="ex : 175" oninput="updateFinance()"></div>
+      <div class="field"><label>Prix vente client (€)</label><input type="number" id="prixVente" placeholder="ex : 200" oninput="updateFinance()"></div>
     </div>
-
     <div class="finance-card">
       <div class="finance-title">Calcul automatique</div>
       <div class="finance-grid">
@@ -337,19 +208,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
       </div>
       <div class="finance-warn hidden" id="fWarn"><i class="ti ti-alert-triangle"></i><span id="fWarnText"></span></div>
     </div>
-
-    <!-- NOTES -->
     <div class="card mt1">
       <div class="card-header"><i class="ti ti-notes"></i><span>Notes</span></div>
       <div class="field"><textarea id="notes" placeholder="Infos complémentaires…"></textarea></div>
     </div>
-
     <button class="btn-main" onclick="goStep(3)">Vérifier <i class="ti ti-arrow-right"></i></button>
     <button class="btn-sec" onclick="goStep(1)"><i class="ti ti-arrow-left"></i> Retour</button>
     <div style="height:1rem"></div>
   </div>
 
-  <!-- STEP 3 : CHECKLIST -->
+  <!-- STEP 3 -->
   <div id="step3" class="hidden">
     <div class="card">
       <div class="card-header"><i class="ti ti-list-check"></i><span>Vérification avant génération</span></div>
@@ -360,15 +228,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
     <div style="height:1rem"></div>
   </div>
 
-  <!-- STEP 4 : RÉSULTATS -->
+  <!-- STEP 4 -->
   <div id="step4" class="hidden">
     <div class="progress-wrap">
       <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       <div class="progress-label" id="progressLabel">Génération en cours…</div>
     </div>
-    <div id="successBanner" class="success-banner hidden">
-      <i class="ti ti-circle-check" style="font-size:18px"></i> Tous les livrables sont prêts !
-    </div>
+    <div id="successBanner" class="success-banner hidden"><i class="ti ti-circle-check" style="font-size:18px"></i> Tous les livrables sont prêts !</div>
+    <div id="calStatus" class="hidden"></div>
     <div class="results-wrap">
       <div class="tab-bar">
         <div class="tab active" data-tab="partenaire" onclick="showTab('partenaire',this)">Partenaire</div>
@@ -381,21 +248,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
       <div class="result-body hidden" id="resultBody"></div>
     </div>
     <button class="copy-btn" onclick="copyResult()"><i class="ti ti-copy"></i> Copier</button>
-    <button class="btn-main hidden" id="btnCalendar" onclick="openCalendarLink()">
-      <i class="ti ti-calendar-plus"></i> Ajouter au Google Calendar
-    </button>
+    <button class="btn-main btn-green hidden" id="btnCalendar" onclick="createCalendarEvents()"><i class="ti ti-calendar-plus"></i> Créer dans Google Calendar</button>
     <button class="btn-sec" onclick="newReservation()"><i class="ti ti-plus"></i> Nouvelle réservation</button>
     <div style="height:1rem"></div>
   </div>
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────────
-let currentType = null;
-let currentTab = 'partenaire';
-let results = {};
-let fd = {};
+// ─── CONFIG ───────────────────────────────────────────────────────
+const CLIENT_ID = '693214253782-qfqph174fj0fm41mp7m0o1jqam74pg2i.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/calendar';
+const CALENDAR_ID = 'remyrondeau92@gmail.com';
+
+// ─── STATE ────────────────────────────────────────────────────────
+let currentType = null, currentTab = 'partenaire', results = {}, fd = {};
 let apiKey = localStorage.getItem('peyra_api_key') || '';
+let tokenClient = null, accessToken = null, gapiReady = false;
 
 // ─── API KEY ──────────────────────────────────────────────────────
 function saveApiKey() {
@@ -407,28 +275,53 @@ function saveApiKey() {
 }
 window.onload = () => {
   if (apiKey) document.getElementById('apiModal').style.display = 'none';
+  initGoogle();
 };
+
+// ─── GOOGLE AUTH ──────────────────────────────────────────────────
+function initGoogle() {
+  gapi.load('client', async () => {
+    await gapi.client.init({ discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'] });
+    gapiReady = true;
+  });
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (resp) => {
+      if (resp.error) { console.error(resp); return; }
+      accessToken = resp.access_token;
+      gapi.client.setToken({ access_token: accessToken });
+      document.getElementById('googleAuthLabel').textContent = 'Connecté ✓';
+      document.getElementById('btnGoogleAuth').classList.add('connected');
+    }
+  });
+}
+
+function handleGoogleAuth() {
+  if (accessToken) {
+    accessToken = null;
+    gapi.client.setToken(null);
+    document.getElementById('googleAuthLabel').textContent = 'Connecter';
+    document.getElementById('btnGoogleAuth').classList.remove('connected');
+  } else {
+    tokenClient.requestAccessToken({ prompt: 'consent' });
+  }
+}
 
 // ─── PARTENAIRES ──────────────────────────────────────────────────
 const PART_OPTIONS = {
-  voiture: [{ v:'makis', l:'Makis Famozo' }],
-  quad: [{ v:'makis', l:'Makis Famozo' }],
-  buggy_location: [{ v:'makis', l:'Makis Famozo' }],
-  bateau: [
-    { v:'redon_skipper', l:'Redon — avec skipper (port nord)' },
-    { v:'redon_self', l:'Redon — self-drive (port nord)' },
-    { v:'orestis_skipper', l:'Orestis — avec skipper (port sud)' },
-    { v:'orestis_self', l:'Orestis — self-drive (port sud)' },
-    { v:'elena', l:'Elena — bateau Remy (50/50)' },
-  ],
-  buggy_excursion: [{ v:'gina_giannis', l:'Gina + Giannis' }],
-  transfert: [{ v:'transfert', l:'Partenaire transfert' }],
+  voiture: [{v:'makis',l:'Makis Famozo'}],
+  quad: [{v:'makis',l:'Makis Famozo'}],
+  buggy_location: [{v:'makis',l:'Makis Famozo'}],
+  bateau: [{v:'redon_skipper',l:'Redon — avec skipper (port nord)'},{v:'redon_self',l:'Redon — self-drive (port nord)'},{v:'orestis_skipper',l:'Orestis — avec skipper (port sud)'},{v:'orestis_self',l:'Orestis — self-drive (port sud)'},{v:'elena',l:'Elena — bateau Remy (50/50)'}],
+  buggy_excursion: [{v:'gina_giannis',l:'Gina + Giannis'}],
+  transfert: [{v:'transfert',l:'Partenaire transfert'}],
 };
-const PART_LABEL = { makis:'Makis Famozo', redon_skipper:'Redon avec skipper (nord)', redon_self:'Redon self-drive (nord)', orestis_skipper:'Orestis avec skipper (sud)', orestis_self:'Orestis self-drive (sud)', elena:'Elena (bateau Remy)', gina_giannis:'Gina + Giannis', transfert:'Partenaire transfert' };
+const PART_LABEL = {makis:'Makis Famozo',redon_skipper:'Redon avec skipper (nord)',redon_self:'Redon self-drive (nord)',orestis_skipper:'Orestis avec skipper (sud)',orestis_self:'Orestis self-drive (sud)',elena:'Elena (bateau Remy)',gina_giannis:'Gina + Giannis',transfert:'Partenaire transfert'};
+const COLOR_MAP = {voiture:3,quad:5,buggy_location:4,buggy_excursion:10,transfert:6};
 const REDON_SK = ['Mira','Lina','Erwin','Zeus'];
 const REDON_SF = ['Alexandra','Valeria'];
 
-// ─── TYPE SELECTION ───────────────────────────────────────────────
 function selectType(btn) {
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -439,20 +332,16 @@ function selectType(btn) {
 
 function adaptForm() {
   const t = currentType;
-  const isBoat = t === 'bateau';
-  const isVehicle = ['voiture','quad','buggy_location'].includes(t);
-  const isBuggyEx = t === 'buggy_excursion';
-  const isTransfert = t === 'transfert';
-
-  document.getElementById('detailLabel').textContent = isBoat ? 'Détails bateau' : isBuggyEx ? 'Détails excursion' : isTransfert ? 'Détails transfert' : 'Détails véhicule';
-  document.getElementById('modelLabel').textContent = isBoat ? 'Description' : isBuggyEx ? 'Description' : isTransfert ? 'Trajet' : 'Modèle';
-  document.getElementById('fieldAssurance').classList.toggle('hidden', isBoat || isBuggyEx || isTransfert);
+  const isBoat = t === 'bateau', isVeh = ['voiture','quad','buggy_location'].includes(t);
+  const isBEx = t === 'buggy_excursion', isTr = t === 'transfert';
+  document.getElementById('detailLabel').textContent = isBoat ? 'Détails bateau' : isBEx ? 'Détails excursion' : isTr ? 'Détails transfert' : 'Détails véhicule';
+  document.getElementById('modelLabel').textContent = isBoat ? 'Description' : isBEx ? 'Description' : isTr ? 'Trajet' : 'Modèle';
+  document.getElementById('fieldAssurance').classList.toggle('hidden', isBoat || isBEx || isTr);
   document.getElementById('fieldBateauNom').classList.toggle('hidden', !isBoat);
-  document.getElementById('fieldDureeH').classList.toggle('hidden', !isBoat && !isBuggyEx);
+  document.getElementById('fieldDureeH').classList.toggle('hidden', !isBoat && !isBEx);
   document.getElementById('fieldNbPax').classList.toggle('hidden', !isBoat);
   document.getElementById('fieldZone').classList.toggle('hidden', !isBoat);
-  document.getElementById('retourRow').classList.toggle('hidden', isBoat || isBuggyEx || isTransfert);
-
+  document.getElementById('retourRow').classList.toggle('hidden', isBoat || isBEx || isTr);
   const sel = document.getElementById('partenaire');
   sel.innerHTML = '<option value="">— Sélectionner —</option>';
   (PART_OPTIONS[t] || []).forEach(o => sel.innerHTML += `<option value="${o.v}">${o.l}</option>`);
@@ -460,7 +349,6 @@ function adaptForm() {
 }
 
 function onPartenaireChange() { updateBateauNoms(); updateFinance(); }
-
 function updateBateauNoms() {
   const p = document.getElementById('partenaire').value;
   const sel = document.getElementById('bateauNom');
@@ -469,7 +357,6 @@ function updateBateauNoms() {
   if (p === 'redon_self') REDON_SF.forEach(b => sel.innerHTML += `<option>${b}</option>`);
 }
 
-// ─── NATIONALITY ──────────────────────────────────────────────────
 function detectNat() {
   const phone = document.getElementById('clientPhone').value;
   const map = {'+33':'🇫🇷 France','+32':'🇧🇪 Belgique','+41':'🇨🇭 Suisse','+49':'🇩🇪 Allemagne','+44':'🇬🇧 UK','+351':'🇵🇹 Portugal','+34':'🇪🇸 Espagne','+39':'🇮🇹 Italie','+1':'🇺🇸 US/Canada','+30':'🇬🇷 Grèce'};
@@ -480,17 +367,12 @@ function detectNat() {
   else tag.style.display = 'none';
 }
 
-// ─── DATES ────────────────────────────────────────────────────────
 function calcJours() {
-  const s = document.getElementById('dateStart').value;
-  const e = document.getElementById('dateEnd').value;
-  const hs = document.getElementById('heureStart').value || '00:00';
-  const he = document.getElementById('heureEnd').value || '00:00';
+  const s = document.getElementById('dateStart').value, e = document.getElementById('dateEnd').value;
+  const hs = document.getElementById('heureStart').value || '00:00', he = document.getElementById('heureEnd').value || '00:00';
   const wrap = document.getElementById('daysBadgeWrap');
   if (!s || !e) { wrap.classList.add('hidden'); return; }
-  const start = new Date(s + 'T' + hs);
-  const end = new Date(e + 'T' + he);
-  let days = Math.ceil((end - start) / 86400000);
+  let days = Math.ceil((new Date(e+'T'+he) - new Date(s+'T'+hs)) / 86400000);
   if (he < hs) days = Math.max(days, 1);
   days = Math.max(1, days);
   document.getElementById('daysText').textContent = days + ' jour' + (days > 1 ? 's' : '');
@@ -506,7 +388,6 @@ function updateLieu() {
   document.getElementById('fieldVolRetour').classList.toggle('hidden', l !== 'aeroport');
 }
 
-// ─── FINANCE ──────────────────────────────────────────────────────
 function updateFinance() {
   const t = currentType;
   const pp = parseFloat(document.getElementById('prixPartenaire').value) || 0;
@@ -521,22 +402,13 @@ function updateFinance() {
   const warn = document.getElementById('fWarn');
   warn.classList.add('hidden');
   if (['voiture','quad','buggy_location'].includes(t)) {
-    tp = pp + totalAss;
-    const cr = 0.15 * tp;
-    comm = Math.ceil(cr);
-    marge = pv - pp;
-    acompte = Math.floor(cr + marge);
-    tc = pv + totalAss;
-    reste = tc - acompte;
-    gain = comm + marge;
+    tp = pp + totalAss; const cr = 0.15 * tp; comm = Math.ceil(cr); marge = pv - pp;
+    acompte = Math.floor(cr + marge); tc = pv + totalAss; reste = tc - acompte; gain = comm + marge;
     if (marge < 0) { warn.classList.remove('hidden'); document.getElementById('fWarnText').textContent = 'Marge négative — geste commercial ?'; }
   } else if (part === 'elena') {
-    gain = pv * 0.5; acompte = Math.floor(gain * 0.5);
-    tc = pv; reste = pv - acompte;
-    tp = 0; comm = 0; marge = gain;
+    gain = pv * 0.5; acompte = Math.floor(gain * 0.5); tc = pv; reste = pv - acompte; tp = 0; comm = 0; marge = gain;
   } else {
-    marge = pv - pp; gain = marge; acompte = marge;
-    tc = pv; reste = pp; tp = pp; comm = 0;
+    marge = pv - pp; gain = marge; acompte = marge; tc = pv; reste = pp; tp = pp; comm = 0;
     if (marge < 0) { warn.classList.remove('hidden'); document.getElementById('fWarnText').textContent = 'Marge négative — deal pub ?'; }
   }
   const f = v => Math.round(v) + '€';
@@ -546,10 +418,9 @@ function updateFinance() {
   document.getElementById('fA').textContent = f(acompte);
   document.getElementById('fTC').textContent = f(tc);
   document.getElementById('fR').textContent = f(reste);
-  fd.finance = { tp, comm, marge, acompte, tc, reste, gain, totalAss, assJ, j };
+  fd.finance = {tp, comm, marge, acompte, tc, reste, gain, totalAss, assJ, j};
 }
 
-// ─── STEPS ────────────────────────────────────────────────────────
 function goStep(n) {
   [1,2,3,4].forEach(i => {
     document.getElementById('step'+i).classList.add('hidden');
@@ -563,43 +434,36 @@ function goStep(n) {
   if (n === 3) buildChecklist();
 }
 
-// ─── CHECKLIST ────────────────────────────────────────────────────
 function buildChecklist() {
   const v = id => document.getElementById(id)?.value || '';
   const items = [
-    { ok: !!v('clientName'), label: 'Nom client', val: v('clientName') || '⚠ manquant' },
-    { ok: !!v('clientPhone'), label: 'Téléphone', val: v('clientPhone') || '⚠ manquant' },
-    { ok: !!v('vehicleModel'), label: 'Véhicule / activité', val: v('vehicleModel') || '⚠ manquant' },
-    { ok: !!v('partenaire'), label: 'Partenaire', val: PART_LABEL[v('partenaire')] || '⚠ À vérifier' },
-    { ok: !!v('dateStart'), label: 'Date début', val: v('dateStart') || '⚠ manquant' },
-    { ok: !!v('heureStart'), label: 'Heure prise en charge', val: v('heureStart') || '⚠ À vérifier' },
-    { ok: !!v('lieuStart'), label: 'Lieu', val: v('lieuStart') || '⚠ manquant' },
-    { ok: !!v('prixPartenaire'), label: 'Prix partenaire', val: v('prixPartenaire') ? v('prixPartenaire')+'€' : '⚠ manquant' },
-    { ok: !!v('prixVente'), label: 'Prix vente', val: v('prixVente') ? v('prixVente')+'€' : '⚠ manquant' },
+    {ok:!!v('clientName'),label:'Nom client',val:v('clientName')||'⚠ manquant'},
+    {ok:!!v('clientPhone'),label:'Téléphone',val:v('clientPhone')||'⚠ manquant'},
+    {ok:!!v('vehicleModel'),label:'Véhicule / activité',val:v('vehicleModel')||'⚠ manquant'},
+    {ok:!!v('partenaire'),label:'Partenaire',val:PART_LABEL[v('partenaire')]||'⚠ À vérifier'},
+    {ok:!!v('dateStart'),label:'Date début',val:v('dateStart')||'⚠ manquant'},
+    {ok:!!v('heureStart'),label:'Heure prise en charge',val:v('heureStart')||'⚠ À vérifier'},
+    {ok:!!v('lieuStart'),label:'Lieu',val:v('lieuStart')||'⚠ manquant'},
+    {ok:!!v('prixPartenaire'),label:'Prix partenaire',val:v('prixPartenaire')?v('prixPartenaire')+'€':'⚠ manquant'},
+    {ok:!!v('prixVente'),label:'Prix vente',val:v('prixVente')?v('prixVente')+'€':'⚠ manquant'},
   ];
-  if (v('lieuStart') === 'aeroport') items.push({ ok: !!v('volAller'), label: 'N° vol aller', val: v('volAller') || '⚠ À vérifier' });
-  document.getElementById('checklistContent').innerHTML = items.map(c => `
-    <div class="check-item ${c.ok?'ok':'warn'}">
-      <i class="ti ti-${c.ok?'circle-check':'alert-circle'}"></i>
-      <span>${c.label} : <strong>${c.val}</strong></span>
-    </div>`).join('');
+  if (v('lieuStart') === 'aeroport') items.push({ok:!!v('volAller'),label:'N° vol aller',val:v('volAller')||'⚠ À vérifier'});
+  document.getElementById('checklistContent').innerHTML = items.map(c =>
+    `<div class="check-item ${c.ok?'ok':'warn'}"><i class="ti ti-${c.ok?'circle-check':'alert-circle'}"></i><span>${c.label} : <strong>${c.val}</strong></span></div>`
+  ).join('');
 }
 
-// ─── COLLECT DATA ─────────────────────────────────────────────────
 function collectData() {
   const v = id => document.getElementById(id)?.value || '';
   return {
-    type: currentType,
-    client: v('clientName'), phone: v('clientPhone'), nat: v('clientNat'),
-    model: v('vehicleModel'), partenaire: v('partenaire'), bateauNom: v('bateauNom'),
-    dureeH: v('dureeH'), nbPax: v('nbPax'), zone: v('zone'), assurance: v('assurance'),
-    dateStart: v('dateStart'), heureStart: v('heureStart'),
-    dateEnd: v('dateEnd'), heureEnd: v('heureEnd'),
-    nbJours: fd.nbJours || 1,
-    lieu: v('lieuStart'), hotel: v('hotelName'),
-    volAller: v('volAller'), volRetour: v('volRetour'),
-    prixPartenaire: v('prixPartenaire'), prixVente: v('prixVente'),
-    notes: v('notes'), finance: fd.finance || {}
+    type:currentType, client:v('clientName'), phone:v('clientPhone'), nat:v('clientNat'),
+    model:v('vehicleModel'), partenaire:v('partenaire'), bateauNom:v('bateauNom'),
+    dureeH:v('dureeH'), nbPax:v('nbPax'), zone:v('zone'), assurance:v('assurance'),
+    dateStart:v('dateStart'), heureStart:v('heureStart'), dateEnd:v('dateEnd'), heureEnd:v('heureEnd'),
+    nbJours:fd.nbJours||1, lieu:v('lieuStart'), hotel:v('hotelName'),
+    volAller:v('volAller'), volRetour:v('volRetour'),
+    prixPartenaire:v('prixPartenaire'), prixVente:v('prixVente'),
+    notes:v('notes'), finance:fd.finance||{}
   };
 }
 
@@ -607,101 +471,40 @@ function collectData() {
 const SYS = `Tu es l'assistant de réservation de Peyra Voyage, agence locale à Zakynthos fondée par Remy Rondeau. Génère des messages précis, voix humaine (jamais style IA), tutoiement côté client français. RÈGLE ABSOLUE : le partenaire ne voit JAMAIS le prix de vente, la marge, ni l'acompte réel client. Réponds UNIQUEMENT avec le message demandé, sans introduction ni commentaire.`;
 
 function lieuStr(d) {
-  if (d.lieu === 'aeroport') return `Aéroport de Zakynthos (vol aller : ${d.volAller||'À VÉRIFIER'})`;
-  if (d.lieu === 'hotel') return `Hôtel ${d.hotel}`;
-  if (d.lieu === 'port_nord') return 'Port Nord (Redon)';
-  if (d.lieu === 'port_sud') return 'Port Sud (Orestis)';
-  if (d.lieu === 'ks_storage') return 'KS Storage';
+  if (d.lieu==='aeroport') return `Aéroport de Zakynthos (vol aller : ${d.volAller||'À VÉRIFIER'})`;
+  if (d.lieu==='hotel') return `Hôtel ${d.hotel}`;
+  if (d.lieu==='port_nord') return 'Port Nord (Redon)';
+  if (d.lieu==='port_sud') return 'Port Sud (Orestis)';
+  if (d.lieu==='ks_storage') return 'KS Storage';
   return d.lieu;
 }
 function assStr(d) {
   const f = d.finance;
-  if (!d.assurance || d.assurance === 'basique') return 'Basique (0€)';
-  const rate = f.assJ + '€/j';
-  return `Complète (${rate} × ${f.j}j = ${Math.round(f.totalAss)}€)`;
+  if (!d.assurance || d.assurance==='basique') return 'Basique (0€)';
+  return `Complète (${f.assJ}€/j × ${f.j}j = ${Math.round(f.totalAss)}€)`;
 }
 
 function buildPrompt(tab, d) {
-  const f = d.finance;
-  const fmt = v => Math.round(v) + '€';
-  const pl = PART_LABEL[d.partenaire] || d.partenaire;
-  const isVeh = ['voiture','quad','buggy_location'].includes(d.type);
-
-  if (tab === 'partenaire') {
-    if (isVeh) return `Message partenaire EN ANGLAIS pour Makis Famozo.
-Type : ${d.type} | Véhicule : ${d.model} | ${d.nbJours} jours
-Client : ${d.client} | ${d.phone}
-Pick-up : ${lieuStr(d)} — ${d.dateStart} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}
-Drop-off : ${d.dateEnd} à ${d.heureEnd}${d.volRetour?' (vol '+d.volRetour+')':''}
-Insurance : ${assStr(d)}
-Partner price : ${d.prixPartenaire}€ | Insurance : ${fmt(f.totalAss)} | Total supplier : ${fmt(f.tp)}
-Deposit received (15% commission) : ${fmt(f.acompte)} | Balance on arrival : ${fmt(f.reste)}
-Signe "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
-    return `Message partenaire EN ANGLAIS pour ${pl}.
-Activité : ${d.type}${d.bateauNom?' — bateau '+d.bateauNom:''} | ${d.dureeH||''} ${d.nbPax?'| '+d.nbPax+' pers':''}
-Client : ${d.client} | ${d.phone}
-Date : ${d.dateStart} à ${d.heureStart} | Lieu : ${lieuStr(d)}
-Partner price : ${d.prixPartenaire}€
-Signe "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
+  const f = d.finance, fmt = v => Math.round(v)+'€', pl = PART_LABEL[d.partenaire]||d.partenaire;
+  if (tab==='partenaire') {
+    if (['voiture','quad','buggy_location'].includes(d.type)) return `Message partenaire EN ANGLAIS pour Makis Famozo.\nType : ${d.type} | Véhicule : ${d.model} | ${d.nbJours} jours\nClient : ${d.client} | ${d.phone}\nPick-up : ${lieuStr(d)} — ${d.dateStart} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}\nDrop-off : ${d.dateEnd} à ${d.heureEnd}${d.volRetour?' (vol '+d.volRetour+')':''}\nInsurance : ${assStr(d)}\nPartner price : ${d.prixPartenaire}€ | Insurance : ${fmt(f.totalAss)} | Total supplier : ${fmt(f.tp)}\nDeposit received (15% commission) : ${fmt(f.acompte)} | Balance on arrival : ${fmt(f.reste)}\nSigne "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
+    return `Message partenaire EN ANGLAIS pour ${pl}.\nActivité : ${d.type}${d.bateauNom?' — bateau '+d.bateauNom:''} | ${d.dureeH||''} ${d.nbPax?'| '+d.nbPax+' pers':''}\nClient : ${d.client} | ${d.phone}\nDate : ${d.dateStart} à ${d.heureStart} | Lieu : ${lieuStr(d)}\nPartner price : ${d.prixPartenaire}€\nSigne "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
   }
-
-  if (tab === 'client') return `Message WhatsApp confirmation en FRANÇAIS, tutoiement, pour ${d.client}.
-Type : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}
-${d.nbJours ? d.nbJours+' jours' : d.dureeH ? d.dureeH : ''}
-Dates : ${d.dateStart} ${d.heureStart} → ${d.dateEnd||''} ${d.heureEnd||''}
-Lieu : ${lieuStr(d)}${d.volRetour?' | Vol retour : '+d.volRetour:''}
-Assurance : ${assStr(d)}
-Total : ${fmt(f.tc)} | Acompte réglé : ${fmt(f.acompte)} | Reste sur place : ${fmt(f.reste)} (en espèces)
-${d.lieu==='aeroport'?'Inclure lien parking aéroport : https://share.google/Q89P0IKB67oOQuGNa':''}
-${d.lieu==='hotel'?'Inclure localisation parking : https://maps.apple/p/-rcfD085WY4_iJ':''}
-${d.lieu==='port_nord'?'Inclure lien port Redon nord : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38':''}
-${d.lieu==='port_sud'?'Inclure lien port Orestis sud : https://maps.app.goo.gl/wCNuDYorgRN2kUS89':''}
-Signe "Remy de Peyra Voyage".`;
-
-  if (tab === 'j1') return `Message rappel J-1 pour description event Google Calendar.
-Cadré "demain". Tutoiement. Signé "Remy de Peyra Voyage 💙💙".
-Client : ${d.client}
-Type : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}
-Demain : ${d.dateStart} à ${d.heureStart} — ${lieuStr(d)}
-Reste sur place : ${fmt(f.reste)} (en espèces)
-${d.partenaire?.includes('self')?'DEMANDER photo CNI/passeport de chaque participant.':''}
-${d.partenaire?.includes('skipper')?'NE PAS demander CNI/passeport.':''}`;
-
-  if (tab === 'calendar') {
-    const colorMap = { voiture:3, quad:5, buggy_location:4, buggy_excursion:10, transfert:6 };
-    let colorId = colorMap[d.type] || 3;
-    if (d.type === 'bateau') colorId = d.partenaire?.includes('skipper') ? 7 : d.partenaire === 'elena' ? 2 : 9;
-    return `Génère les infos structurées pour créer les events Google Calendar (Peyra Voyage).
-Type : ${d.type} | Partenaire : ${pl} | colorId : ${colorId}
-Client : ${d.client} | ${d.phone} | ${d.nat}
-Activité : ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}
-Prise en charge : ${d.dateStart} à ${d.heureStart} — ${lieuStr(d)}
-${d.dateEnd ? 'Retour : '+d.dateEnd+' à '+d.heureEnd : ''}
-Finance : Total ${fmt(f.tc)} | Acompte ${fmt(f.acompte)} | Reste ${fmt(f.reste)}
-Assurance : ${assStr(d)}
-Fuseau : Europe/Athens. Rappel popup 1440min avant pickup.
-Pour véhicules : 2 events (pickup 1h + retour 30min). Pour bateaux/excursions : 1 event.
-Inclure dans la description le message J-1 complet prêt à copier-coller.`;
+  if (tab==='client') return `Message WhatsApp confirmation en FRANÇAIS, tutoiement, pour ${d.client}.\nType : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\n${d.nbJours?d.nbJours+' jours':d.dureeH?d.dureeH:''}\nDates : ${d.dateStart} ${d.heureStart} → ${d.dateEnd||''} ${d.heureEnd||''}\nLieu : ${lieuStr(d)}${d.volRetour?' | Vol retour : '+d.volRetour:''}\nAssurance : ${assStr(d)}\nTotal : ${fmt(f.tc)} | Acompte réglé : ${fmt(f.acompte)} | Reste sur place : ${fmt(f.reste)} (en espèces)\n${d.lieu==='aeroport'?'Inclure lien parking aéroport : https://share.google/Q89P0IKB67oOQuGNa':''}\n${d.lieu==='hotel'?'Inclure localisation parking : https://maps.apple/p/-rcfD085WY4_iJ':''}\n${d.lieu==='port_nord'?'Inclure lien port Redon nord : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38':''}\n${d.lieu==='port_sud'?'Inclure lien port Orestis sud : https://maps.app.goo.gl/wCNuDYorgRN2kUS89':''}\nSigne "Remy de Peyra Voyage".`;
+  if (tab==='j1') return `Message rappel J-1 pour description event Google Calendar. Cadré "demain". Tutoiement. Signé "Remy de Peyra Voyage 💙💙".\nClient : ${d.client}\nType : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\nDemain : ${d.dateStart} à ${d.heureStart} — ${lieuStr(d)}\nReste sur place : ${fmt(f.reste)} (en espèces)\n${d.partenaire?.includes('self')?'DEMANDER photo CNI/passeport de chaque participant.':''}\n${d.partenaire?.includes('skipper')?'NE PAS demander CNI/passeport.':''}`;
+  if (tab==='calendar') {
+    let colorId = COLOR_MAP[d.type] || 3;
+    if (d.type==='bateau') colorId = d.partenaire?.includes('skipper') ? 7 : d.partenaire==='elena' ? 2 : 9;
+    return `Génère les infos structurées pour créer les events Google Calendar (Peyra Voyage).\nType : ${d.type} | Partenaire : ${pl} | colorId : ${colorId}\nClient : ${d.client} | ${d.phone} | ${d.nat}\nActivité : ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\nPrise en charge : ${d.dateStart} à ${d.heureStart} — ${lieuStr(d)}\n${d.dateEnd?'Retour : '+d.dateEnd+' à '+d.heureEnd:''}\nFinance : Total ${fmt(f.tc)} | Acompte ${fmt(f.acompte)} | Reste ${fmt(f.reste)}\nAssurance : ${assStr(d)}\nFuseau : Europe/Athens. Rappel popup 1440min avant pickup.\nPour véhicules : 2 events (pickup 1h + retour 30min). Pour bateaux/excursions : 1 event.\nInclure dans la description le message J-1 complet prêt à copier-coller.`;
   }
-
-  if (tab === 'facture') return `Génère le récapitulatif de facture pour Peyra Voyage.
-Client : ${d.client} | ${d.phone}
-Activité : ${d.model}${d.bateauNom?' — '+d.bateauNom:''}
-Période : ${d.dateStart}${d.dateEnd?' → '+d.dateEnd:''} ${d.nbJours?'('+d.nbJours+' jours)':d.dureeH?'('+d.dureeH+')':''}
-Assurance : ${assStr(d)}
-Activité : ${d.prixVente}€ | Assurance : ${fmt(f.totalAss)} | TOTAL : ${fmt(f.tc)}
-Montant prépayé : ${fmt(f.acompte)} | Reste sur place : ${fmt(f.reste)} (en espèces)
-${d.notes?'Notes : '+d.notes:''}
-Agence : contact@peyravoyage.com | +33 6 50 63 32 40 | zakynthos.fr
-Format propre et lisible, signé Peyra Voyage.`;
+  if (tab==='facture') return `Génère le récapitulatif de facture pour Peyra Voyage.\nClient : ${d.client} | ${d.phone}\nActivité : ${d.model}${d.bateauNom?' — '+d.bateauNom:''}\nPériode : ${d.dateStart}${d.dateEnd?' → '+d.dateEnd:''} ${d.nbJours?'('+d.nbJours+' jours)':d.dureeH?'('+d.dureeH+')':''}\nAssurance : ${assStr(d)}\nActivité : ${d.prixVente}€ | Assurance : ${fmt(f.totalAss)} | TOTAL : ${fmt(f.tc)}\nMontant prépayé : ${fmt(f.acompte)} | Reste sur place : ${fmt(f.reste)} (en espèces)\n${d.notes?'Notes : '+d.notes:''}\nAgence : contact@peyravoyage.com | +33 6 50 63 32 40 | zakynthos.fr\nFormat propre et lisible, signé Peyra Voyage.`;
 }
 
-// ─── GENERATE ─────────────────────────────────────────────────────
 async function callClaude(prompt) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYS, messages: [{ role: 'user', content: prompt }] })
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:prompt}]})
   });
   const j = await res.json();
   if (j.error) return '⚠ Erreur API : ' + j.error.message;
@@ -717,9 +520,9 @@ async function generateAll() {
   const data = collectData();
   results = {};
   document.getElementById('successBanner').classList.add('hidden');
+  document.getElementById('calStatus').classList.add('hidden');
   for (let i = 0; i < TABS.length; i++) {
-    const pct = Math.round((i / TABS.length) * 100);
-    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressFill').style.width = Math.round((i/TABS.length)*100) + '%';
     document.getElementById('progressLabel').textContent = 'Génération : ' + TAB_LABELS[i] + '…';
     results[TABS[i]] = await callClaude(buildPrompt(TABS[i], data));
   }
@@ -727,43 +530,108 @@ async function generateAll() {
   document.getElementById('progressLabel').textContent = '';
   document.getElementById('successBanner').classList.remove('hidden');
   showTab('partenaire', document.querySelector('.tab'));
+  // Auto-create calendar if connected
+  if (accessToken) setTimeout(() => createCalendarEvents(), 500);
 }
 
-// ─── TABS ─────────────────────────────────────────────────────────
 function showTab(tab, el) {
   currentTab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   if (el) el.classList.add('active');
-  const dots = document.getElementById('tabDots');
-  const body = document.getElementById('resultBody');
-  if (results[tab]) {
-    dots.style.display = 'none';
-    body.classList.remove('hidden');
-    body.textContent = results[tab];
-  } else {
-    dots.style.display = 'flex';
-    body.classList.add('hidden');
-  }
-  document.getElementById('btnCalendar').classList.toggle('hidden', tab !== 'calendar');
+  const dots = document.getElementById('tabDots'), body = document.getElementById('resultBody');
+  if (results[tab]) { dots.style.display='none'; body.classList.remove('hidden'); body.textContent=results[tab]; }
+  else { dots.style.display='flex'; body.classList.add('hidden'); }
+  document.getElementById('btnCalendar').classList.toggle('hidden', tab !== 'calendar' || !!accessToken);
 }
 
 function copyResult() {
-  const text = results[currentTab] || '';
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.querySelector('.copy-btn');
-    const orig = btn.innerHTML;
+  navigator.clipboard.writeText(results[currentTab]||'').then(() => {
+    const btn = document.querySelector('.copy-btn'), orig = btn.innerHTML;
     btn.innerHTML = '<i class="ti ti-check"></i> Copié !';
     setTimeout(() => btn.innerHTML = orig, 2000);
   });
 }
 
-function openCalendarLink() {
-  alert('Pour créer les events : copie les infos de cet onglet et utilise Google Calendar manuellement. L\'intégration automatique sera disponible après déploiement avec OAuth.');
+// ─── CALENDAR ─────────────────────────────────────────────────────
+async function createCalendarEvents() {
+  if (!accessToken) { tokenClient.requestAccessToken({prompt:''}); return; }
+  const d = collectData(), f = d.finance;
+  const calStatus = document.getElementById('calStatus');
+  calStatus.className = 'cal-status loading';
+  calStatus.innerHTML = '<i class="ti ti-loader ti-spin"></i> Création des events Calendar…';
+  calStatus.classList.remove('hidden');
+
+  try {
+    const j1msg = results['j1'] || '';
+    const isVehicle = ['voiture','quad','buggy_location'].includes(d.type);
+    let colorId = COLOR_MAP[d.type] || 3;
+    if (d.type==='bateau') colorId = d.partenaire?.includes('skipper') ? 7 : d.partenaire==='elena' ? 2 : 9;
+
+    const description = `— RÉCAPITULATIF INTERNE —
+Client : ${d.client}
+Téléphone : ${d.phone} (${d.nat})
+Produit : ${d.model}${d.bateauNom?' — '+d.bateauNom:''} ${d.nbJours?'| '+d.nbJours+' jours':d.dureeH?'| '+d.dureeH:''}
+Partenaire : ${PART_LABEL[d.partenaire]||d.partenaire}
+Lieu : ${lieuStr(d)}
+${d.volAller?'Vol aller : '+d.volAller:''}${d.volRetour?' | Vol retour : '+d.volRetour:''}
+
+— FINANCIER —
+Total client : ${Math.round(f.tc)}€
+Acompte reçu : ${Math.round(f.acompte)}€
+Reste sur place : ${Math.round(f.reste)}€ (en espèces)
+Assurance : ${assStr(d)}
+
+— MESSAGE J-1 (prêt à envoyer) —
+${j1msg}`;
+
+    const toDateTime = (date, time, offsetMin=0) => {
+      if (!date) return null;
+      const [h,m] = (time||'10:00').split(':').map(Number);
+      const dt = new Date(date + 'T' + (time||'10:00') + ':00');
+      dt.setMinutes(dt.getMinutes() + offsetMin);
+      return dt.toISOString();
+    };
+
+    const pickupStart = toDateTime(d.dateStart, d.heureStart);
+    const pickupEnd = toDateTime(d.dateStart, d.heureStart, isVehicle ? 60 : (parseInt(d.dureeH)||4)*60);
+
+    const pickupEvent = {
+      summary: `${d.type.charAt(0).toUpperCase()+d.type.slice(1)} — ${d.client}${d.bateauNom?' ('+d.bateauNom+')':''}`,
+      description,
+      location: lieuStr(d),
+      start: { dateTime: pickupStart, timeZone: 'Europe/Athens' },
+      end: { dateTime: pickupEnd, timeZone: 'Europe/Athens' },
+      colorId: String(colorId),
+      reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: 1440 }] }
+    };
+
+    await gapi.client.calendar.events.insert({ calendarId: CALENDAR_ID, resource: pickupEvent });
+
+    if (isVehicle && d.dateEnd) {
+      const retourEvent = {
+        summary: `Retour ${d.type} — ${d.client}`,
+        description: `Retour véhicule\nClient : ${d.client} | ${d.phone}`,
+        location: lieuStr(d),
+        start: { dateTime: toDateTime(d.dateEnd, d.heureEnd), timeZone: 'Europe/Athens' },
+        end: { dateTime: toDateTime(d.dateEnd, d.heureEnd, 30), timeZone: 'Europe/Athens' },
+        colorId: String(colorId),
+        reminders: { useDefault: false, overrides: [] }
+      };
+      await gapi.client.calendar.events.insert({ calendarId: CALENDAR_ID, resource: retourEvent });
+      calStatus.className = 'cal-status';
+      calStatus.innerHTML = '<i class="ti ti-circle-check"></i> 2 events créés dans Google Calendar (pickup + retour) ✓';
+    } else {
+      calStatus.className = 'cal-status';
+      calStatus.innerHTML = '<i class="ti ti-circle-check"></i> Event créé dans Google Calendar ✓';
+    }
+  } catch(e) {
+    calStatus.className = 'cal-status error';
+    calStatus.innerHTML = '<i class="ti ti-alert-circle"></i> Erreur Calendar : ' + (e.result?.error?.message || e.message);
+  }
 }
 
-// ─── RESET ────────────────────────────────────────────────────────
 function newReservation() {
-  currentType = null; results = {}; fd = {};
+  currentType=null; results={}; fd={};
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('btnStep1').disabled = true;
   ['clientName','clientPhone','clientNat','vehicleModel','prixPartenaire','prixVente','notes','hotelName','volAller','volRetour','dureeH','nbPax','dateStart','dateEnd','heureStart','heureEnd'].forEach(id => {
@@ -772,6 +640,8 @@ function newReservation() {
   document.getElementById('daysBadgeWrap').classList.add('hidden');
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('fTP').textContent = document.getElementById('fC').textContent = document.getElementById('fM').textContent = document.getElementById('fA').textContent = document.getElementById('fTC').textContent = document.getElementById('fR').textContent = '—';
+  document.getElementById('calStatus').classList.add('hidden');
+  document.getElementById('successBanner').classList.add('hidden');
   goStep(1);
 }
 </script>
