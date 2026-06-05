@@ -258,7 +258,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 // ─── CONFIG ───────────────────────────────────────────────────────
 const CLIENT_ID = '693214253782-qfqph174fj0fm41mp7m0o1jqam74pg2i.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/calendar';
-const CALENDAR_ID = 'remyrondeau92@gmail.com';
+const CALENDAR_ID = 'primary';
 
 // ─── STATE ────────────────────────────────────────────────────────
 let currentType = null, currentTab = 'partenaire', results = {}, fd = {};
@@ -504,7 +504,7 @@ async function callClaude(prompt) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:prompt}]})
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYS,messages:[{role:'user',content:prompt}]})
   });
   const j = await res.json();
   if (j.error) return '⚠ Erreur API : ' + j.error.message;
