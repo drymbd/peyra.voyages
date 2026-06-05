@@ -15,10 +15,13 @@
 :root{--pb:#1a6fa3;--pd:#0d3d5c;--pl:#e8f4fd;--pg:#6b7280;--pborder:rgba(26,111,163,0.18);--r:12px;--bg:#f0f4f8}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:2rem}
 .app{max-width:480px;margin:0 auto}
-.header{background:var(--pd);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
-.header-logo{height:36px;width:auto;filter:brightness(0) invert(1)}
-.header p{font-size:11px;color:rgba(255,255,255,.5);margin-left:auto;white-space:nowrap}
-.header-actions{display:flex;align-items:center;gap:6px;margin-left:8px}
+.header{background:var(--pd);padding:.9rem 1.25rem;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+.header-logo{height:32px;width:auto}
+.hfb{display:none;align-items:center;gap:10px}
+.hfb .lc{width:36px;height:36px;background:var(--pb);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:white;flex-shrink:0}
+.hfb span{font-size:15px;font-weight:600;color:white}
+.hsub{font-size:11px;color:rgba(255,255,255,.45);margin-left:auto;white-space:nowrap}
+.hactions{display:flex;align-items:center;gap:6px;margin-left:8px}
 .icon-btn{background:rgba(255,255,255,.1);border:none;border-radius:8px;padding:.4rem .6rem;cursor:pointer;color:white;font-size:12px;font-weight:500;display:flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;transition:background .15s;white-space:nowrap}
 .icon-btn:hover{background:rgba(255,255,255,.2)}
 .icon-btn.connected{background:rgba(34,197,94,.25);color:#86efac}
@@ -60,8 +63,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 .btn-main{display:flex;width:calc(100% - 2rem);margin:1rem 1rem 0;background:var(--pb);color:white;border:none;border-radius:var(--r);padding:.95rem;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;align-items:center;justify-content:center;gap:8px;transition:all .15s}
 .btn-main:hover{background:var(--pd)}
 .btn-main:disabled{opacity:.45;cursor:not-allowed}
-.btn-green{background:#16a34a}.btn-green:hover{background:#15803d}
-.btn-wa{background:#25d366}.btn-wa:hover{background:#1ebe5d}
 .btn-sec{display:flex;width:calc(100% - 2rem);margin:.75rem 1rem 0;background:transparent;color:var(--pb);border:1.5px solid var(--pb);border-radius:var(--r);padding:.75rem;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;align-items:center;justify-content:center;gap:8px;transition:all .15s}
 .btn-sec:hover{background:var(--pl)}
 .check-item{display:flex;align-items:flex-start;gap:9px;padding:.4rem 1rem;font-size:13px}
@@ -77,10 +78,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 .tab.active{color:var(--pb);border-bottom-color:var(--pb);background:white}
 .result-body{padding:1rem;font-size:12.5px;line-height:1.7;color:#1f2937;white-space:pre-wrap;font-family:'DM Mono',monospace;background:white;min-height:150px;max-height:380px;overflow-y:auto}
 .result-actions{display:flex;gap:8px;padding:.6rem 1rem 0;flex-wrap:wrap}
-.action-btn{display:flex;align-items:center;gap:5px;background:transparent;border:.5px solid var(--pborder);border-radius:8px;padding:.45rem .75rem;font-size:12px;color:var(--pg);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;text-decoration:none}
+.action-btn{display:flex;align-items:center;gap:5px;background:transparent;border:.5px solid var(--pborder);border-radius:8px;padding:.45rem .75rem;font-size:12px;color:var(--pg);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap}
 .action-btn:hover{border-color:var(--pb);color:var(--pb)}
-.action-btn.wa{border-color:#25d366;color:#25d366}
-.action-btn.wa:hover{background:#f0fdf4}
+.action-btn.wa{border-color:#25d366;color:#25d366}.action-btn.wa:hover{background:#f0fdf4}
 .progress-wrap{margin:1rem 1rem .25rem}
 .progress-bar{height:4px;background:var(--pl);border-radius:99px;overflow:hidden}
 .progress-fill{height:100%;background:var(--pb);border-radius:99px;transition:width .5s ease}
@@ -90,45 +90,60 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
 .dots span:nth-child(2){animation-delay:.2s}
 .dots span:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
-.success-banner{background:#dcfce7;border:.5px solid #86efac;border-radius:var(--r);margin:1rem 1rem 0;padding:.75rem 1rem;display:flex;align-items:center;gap:8px;font-size:13px;color:#166534;font-weight:500}
-.cal-status{border-radius:var(--r);margin:.75rem 1rem 0;padding:.75rem 1rem;font-size:13px;display:flex;align-items:center;gap:8px}
-.cal-status.ok{background:#f0fdf4;border:.5px solid #86efac;color:#166534}
-.cal-status.error{background:#fef2f2;border:.5px solid #fca5a5;color:#991b1b}
-.cal-status.loading{background:var(--pl);border:.5px solid var(--pborder);color:var(--pb)}
+.banner{border-radius:var(--r);margin:.75rem 1rem 0;padding:.75rem 1rem;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
+.banner.success{background:#dcfce7;border:.5px solid #86efac;color:#166534}
+.banner.ok{background:#f0fdf4;border:.5px solid #86efac;color:#166534}
+.banner.error{background:#fef2f2;border:.5px solid #fca5a5;color:#991b1b}
+.banner.loading{background:var(--pl);border:.5px solid var(--pborder);color:var(--pb)}
+.banner.info{background:#eff6ff;border:.5px solid #bfdbfe;color:#1d4ed8}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
-.modal{background:white;border-radius:var(--r);padding:1.5rem;width:100%;max-width:380px}
-.modal h2{font-size:16px;font-weight:600;color:var(--pd);margin-bottom:.5rem}
+.modal{background:white;border-radius:var(--r);padding:1.5rem;width:100%;max-width:400px;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:16px;font-weight:600;color:var(--pd);margin-bottom:.4rem}
 .modal p{font-size:13px;color:var(--pg);margin-bottom:1rem;line-height:1.5}
-.modal input{width:100%;border:1.5px solid var(--pborder);border-radius:8px;padding:.75rem;font-size:13px;font-family:'DM Mono',monospace;outline:none;margin-bottom:1rem}
+.modal label{display:block;font-size:11px;font-weight:600;color:var(--pg);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;margin-top:12px}
+.modal input{width:100%;border:1.5px solid var(--pborder);border-radius:8px;padding:.7rem;font-size:13px;font-family:'DM Mono',monospace;outline:none;margin-bottom:.5rem}
 .modal input:focus{border-color:var(--pb)}
-.modal-note{font-size:11px;color:var(--pg);text-align:center;margin-top:.75rem}
+.modal-note{font-size:11px;color:var(--pg);margin-top:.5rem}
 .modal-note a{color:var(--pb)}
+.sheet-link{font-size:12px;color:var(--pb);text-decoration:none;display:flex;align-items:center;gap:4px;margin-top:6px}
 .hidden{display:none!important}
 .mt1{margin-top:1rem}
 </style>
 </head>
 <body>
 
-<div class="modal-overlay" id="apiModal">
+<!-- CONFIG MODAL -->
+<div class="modal-overlay" id="configModal" style="display:none">
   <div class="modal">
-    <h2>Clé API Anthropic</h2>
-    <p>Entre ta clé API pour activer la génération des messages. Sauvegardée uniquement dans ton navigateur.</p>
-    <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-...">
-    <button class="btn-main" style="margin:0;width:100%" onclick="saveApiKey()"><i class="ti ti-check"></i> Confirmer</button>
-    <p class="modal-note">Obtenir une clé : <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+    <h2>⚙️ Configuration</h2>
+    <p>Ces informations sont sauvegardées uniquement dans ton navigateur.</p>
+    <label>Clé API Anthropic</label>
+    <input type="password" id="cfgApiKey" placeholder="sk-ant-api03-...">
+    <label>ID Google Sheet</label>
+    <input type="text" id="cfgSheetId" placeholder="1bOVgw0QyepkRecf...">
+    <p class="modal-note">Trouve l'ID dans l'URL de ton sheet :<br><code style="font-size:11px">docs.google.com/spreadsheets/d/<strong>ID_ICI</strong>/edit</code></p>
+    <a class="sheet-link" href="https://sheets.google.com" target="_blank"><i class="ti ti-external-link"></i> Créer un nouveau Google Sheet</a>
+    <button class="btn-main" style="margin:1rem 0 0;width:100%" onclick="saveConfig()"><i class="ti ti-check"></i> Sauvegarder</button>
   </div>
 </div>
 
 <div class="app">
   <div class="header">
-    <img class="header-logo" src="https://raw.githubusercontent.com/nicholasgriffintn/peyra-voyage/main/peyra_logo_horizontal.png" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'" alt="Peyra Voyage">
-    <div id="logoFallback" style="display:none;align-items:center;gap:10px">
-      <div style="width:36px;height:36px;background:var(--pb);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:white;flex-shrink:0">P</div>
-      <div><div style="font-size:15px;font-weight:600;color:white;letter-spacing:.04em">PEYRA VOYAGE</div><div style="font-size:11px;color:rgba(255,255,255,.5)">Zakynthos</div></div>
+    <img class="header-logo"
+      src="https://raw.githubusercontent.com/drymbd/peyra.voyages/main/peyra_logo_horizontal.png"
+      onerror="this.style.display='none';document.getElementById('hfb').style.display='flex'"
+      alt="Peyra Voyage">
+    <div id="hfb" class="hfb">
+      <div class="lc">P</div><span>PEYRA VOYAGE</span>
     </div>
-    <div class="header-actions">
-      <button class="icon-btn" id="btnGoogleAuth" onclick="handleGoogleAuth()"><i class="ti ti-brand-google"></i><span id="googleAuthLabel">Connecter</span></button>
-      <button class="icon-btn" onclick="document.getElementById('apiModal').style.display='flex'"><i class="ti ti-key"></i></button>
+    <span class="hsub">Zakynthos</span>
+    <div class="hactions">
+      <button class="icon-btn" id="btnGoogleAuth" onclick="handleGoogleAuth()">
+        <i class="ti ti-brand-google"></i><span id="googleAuthLabel">Connecter</span>
+      </button>
+      <button class="icon-btn" onclick="openConfig()">
+        <i class="ti ti-settings"></i>
+      </button>
     </div>
   </div>
   <div class="step-bar">
@@ -160,7 +175,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
     <div class="card">
       <div class="card-header"><i class="ti ti-user"></i><span>Client</span></div>
       <div class="field"><label>Prénom + Nom</label><input type="text" id="clientName" placeholder="ex : Marie Dupont"></div>
-      <div class="field"><label>Email client</label><input type="email" id="clientEmail" placeholder="ex : marie@email.com"></div>
+      <div class="field"><label>Email <span style="color:#ef4444;font-size:9px">requis pour mail auto</span></label><input type="email" id="clientEmail" placeholder="ex : marie@email.com"></div>
       <div class="field"><label>Téléphone</label><input type="tel" id="clientPhone" placeholder="+33 6 12 34 56 78" oninput="detectNat()"></div>
       <div class="field"><label>Nationalité <span id="natTag" class="nat-tag" style="display:none"></span></label><input type="text" id="clientNat" placeholder="Détectée automatiquement"></div>
     </div>
@@ -170,8 +185,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
       <div class="field"><label>Partenaire</label><select id="partenaire" onchange="onPartenaireChange()"><option value="">— Sélectionner —</option></select></div>
       <div class="field hidden" id="fieldBateauNom"><label>Nom du bateau</label><select id="bateauNom"><option value="">— Sélectionner —</option></select></div>
       <div class="field hidden" id="fieldDureeH"><label>Durée</label><input type="text" id="dureeH" placeholder="ex : 4h"></div>
-      <div class="field hidden" id="fieldNbPax"><label>Nombre de personnes</label><input type="number" id="nbPax" min="1" placeholder="ex : 4"></div>
-      <div class="field hidden" id="fieldZone"><label>Zone de navigation</label><select id="zone"><option value="north_route">Nord — Blue Caves</option><option value="south_route">Sud — Navagio</option><option value="full_tour">Tour complet</option></select></div>
+      <div class="field hidden" id="fieldNbPax"><label>Nb personnes</label><input type="number" id="nbPax" min="1" placeholder="ex : 4"></div>
+      <div class="field hidden" id="fieldZone"><label>Zone navigation</label><select id="zone"><option value="north">Nord — Blue Caves</option><option value="south">Sud — Navagio</option><option value="full">Tour complet</option></select></div>
       <div class="field" id="fieldAssurance"><label>Assurance</label><select id="assurance" onchange="updateFinance()"><option value="basique">Basique (0€)</option><option value="complete_voiture">Complète voiture (9€/j)</option><option value="complete_quad">Complète quad/buggy (20€/j)</option></select></div>
     </div>
     <div class="card">
@@ -180,7 +195,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
       <div id="retourRow"><div class="field-row"><div class="field"><label>Date retour</label><input type="date" id="dateEnd" oninput="calcJours()"></div><div class="field"><label>Heure</label><input type="time" id="heureEnd" oninput="calcJours()"></div></div></div>
       <div id="daysBadgeWrap" class="hidden" style="padding:.6rem 1rem .25rem"><div class="days-badge"><i class="ti ti-clock" style="font-size:13px"></i><span id="daysText">— jours</span></div></div>
       <div class="field"><label>Lieu prise en charge</label><select id="lieuStart" onchange="updateLieu()"><option value="">— Sélectionner —</option><option value="aeroport">Aéroport de Zakynthos</option><option value="hotel">Hôtel</option><option value="port_nord">Port Nord (Redon)</option><option value="port_sud">Port Sud (Orestis)</option><option value="ks_storage">KS Storage</option></select></div>
-      <div class="field hidden" id="fieldHotel"><label>Nom de l'hôtel</label><input type="text" id="hotelName" placeholder="ex : Ionian Star Hotel"></div>
+      <div class="field hidden" id="fieldHotel"><label>Hôtel</label><input type="text" id="hotelName" placeholder="ex : Ionian Star Hotel"></div>
       <div class="field hidden" id="fieldVolAller"><label>N° vol aller</label><input type="text" id="volAller" placeholder="ex : AF1234"></div>
       <div class="field hidden" id="fieldVolRetour"><label>N° vol retour</label><input type="text" id="volRetour" placeholder="ex : AF1235"></div>
     </div>
@@ -213,7 +228,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
   <!-- STEP 3 -->
   <div id="step3" class="hidden">
     <div class="card">
-      <div class="card-header"><i class="ti ti-list-check"></i><span>Vérification avant génération</span></div>
+      <div class="card-header"><i class="ti ti-list-check"></i><span>Vérification</span></div>
       <div id="checklistContent" style="padding:.4rem 0"></div>
     </div>
     <button class="btn-main" onclick="generateAll()"><i class="ti ti-wand"></i> Tout générer</button>
@@ -227,8 +242,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
       <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       <div class="progress-label" id="progressLabel"></div>
     </div>
-    <div id="successBanner" class="success-banner hidden"><i class="ti ti-circle-check" style="font-size:18px"></i> Tous les livrables sont prêts !</div>
-    <div id="calStatus" class="hidden cal-status"></div>
+    <div id="bannerSuccess" class="banner success hidden"><i class="ti ti-circle-check" style="font-size:18px"></i> Tous les livrables sont prêts !</div>
+    <div id="bannerCal" class="hidden banner"></div>
+    <div id="bannerSheet" class="hidden banner"></div>
+    <div id="bannerMail" class="hidden banner"></div>
     <div class="results-wrap">
       <div class="tab-bar">
         <div class="tab active" data-tab="partenaire" onclick="showTab('partenaire',this)">Partenaire</div>
@@ -240,49 +257,72 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;padd
       <div class="dots" id="tabDots"><span></span><span></span><span></span></div>
       <div class="result-body hidden" id="resultBody"></div>
     </div>
-    <div class="result-actions" id="resultActions">
+    <div class="result-actions">
       <button class="action-btn" onclick="copyResult()"><i class="ti ti-copy"></i> Copier</button>
       <a class="action-btn wa hidden" id="btnWA" href="#" target="_blank"><i class="ti ti-brand-whatsapp"></i> WhatsApp</a>
       <button class="action-btn hidden" id="btnPDF" onclick="downloadPDF()"><i class="ti ti-file-download"></i> PDF</button>
     </div>
-    <button class="btn-main btn-green hidden" id="btnCalendar" onclick="createCalendarEvents()"><i class="ti ti-calendar-plus"></i> Créer dans Google Calendar</button>
     <button class="btn-sec" onclick="newReservation()"><i class="ti ti-plus"></i> Nouvelle réservation</button>
     <div style="height:1rem"></div>
   </div>
 </div>
 
 <script>
-const CLIENT_ID = '693214253782-qfqph174fj0fm41mp7m0o1jqam74pg2i.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.send';
-const PART_OPTIONS = {
+// ─── CONFIG ───────────────────────────────────────────────────────
+const CLIENT_ID='693214253782-qfqph174fj0fm41mp7m0o1jqam74pg2i.apps.googleusercontent.com';
+const SCOPES='https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/spreadsheets';
+const BCC='facturation.peyra@gmail.com';
+const MONTHS=['jan','fév','mars','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+
+// Colors for Google Sheets rows (hex without #)
+const SHEET_COLORS={
+  voiture:'D9E1F2',quad:'FFF2CC',buggy_location:'F4CCCC',
+  bateau_skipper:'BDD7EE',bateau_self:'DDEBF7',elena:'C5E0DC',
+  transfert:'FCE4D6',buggy_excursion:'E2EFDA'
+};
+
+const PART_OPTIONS={
   voiture:[{v:'makis',l:'Makis Famozo'}],quad:[{v:'makis',l:'Makis Famozo'}],buggy_location:[{v:'makis',l:'Makis Famozo'}],
   bateau:[{v:'redon_skipper',l:'Redon — avec skipper (nord)'},{v:'redon_self',l:'Redon — self-drive (nord)'},{v:'orestis_skipper',l:'Orestis — avec skipper (sud)'},{v:'orestis_self',l:'Orestis — self-drive (sud)'},{v:'elena',l:'Elena — bateau Remy (50/50)'}],
   buggy_excursion:[{v:'gina_giannis',l:'Gina + Giannis'}],transfert:[{v:'transfert',l:'Partenaire transfert'}]
 };
-const PART_LABEL={makis:'Makis Famozo',redon_skipper:'Redon avec skipper (nord)',redon_self:'Redon self-drive (nord)',orestis_skipper:'Orestis avec skipper (sud)',orestis_self:'Orestis self-drive (sud)',elena:'Elena (bateau Remy)',gina_giannis:'Gina + Giannis',transfert:'Partenaire transfert'};
+const PART_LABEL={makis:'Makis Famozo',redon_skipper:'Redon skipper (nord)',redon_self:'Redon self-drive (nord)',orestis_skipper:'Orestis skipper (sud)',orestis_self:'Orestis self-drive (sud)',elena:'Elena (Remy)',gina_giannis:'Gina + Giannis',transfert:'Transfert'};
 const COLOR_MAP={voiture:3,quad:5,buggy_location:4,buggy_excursion:10,transfert:6};
 const REDON_SK=['Mira','Lina','Erwin','Zeus'],REDON_SF=['Alexandra','Valeria'];
 
 let currentType=null,currentTab='partenaire',results={},fd={};
 let apiKey=localStorage.getItem('peyra_api_key')||'';
-let tokenClient=null,accessToken=null,gapiReady=false;
-let lastData=null;
+let sheetId=localStorage.getItem('peyra_sheet_id')||'1bOVgw0QyepkRecfHEPnieIYW9QCH0-jAjrCQzzQ6d1U';
+let tokenClient=null,accessToken=null;
+let lastData=null,currentOrderId=null;
 
-function saveApiKey(){
-  const val=document.getElementById('apiKeyInput').value.trim();
-  if(!val.startsWith('sk-')){alert('Clé invalide');return;}
-  apiKey=val;localStorage.setItem('peyra_api_key',val);
-  document.getElementById('apiModal').style.display='none';
+// ─── CONFIG MODAL ─────────────────────────────────────────────────
+function openConfig(){
+  document.getElementById('cfgApiKey').value=apiKey;
+  document.getElementById('cfgSheetId').value=sheetId;
+  document.getElementById('configModal').style.display='flex';
 }
+function saveConfig(){
+  const k=document.getElementById('cfgApiKey').value.trim();
+  const s=document.getElementById('cfgSheetId').value.trim();
+  if(k){apiKey=k;localStorage.setItem('peyra_api_key',k);}
+  if(s){sheetId=s;localStorage.setItem('peyra_sheet_id',s);}
+  document.getElementById('configModal').style.display='none';
+}
+
 window.onload=()=>{
-  if(apiKey)document.getElementById('apiModal').style.display='none';
+  if(!apiKey)openConfig();
   initGoogle();
 };
 
+// ─── GOOGLE AUTH ──────────────────────────────────────────────────
 function initGoogle(){
   gapi.load('client',async()=>{
-    await gapi.client.init({discoveryDocs:['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest','https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest']});
-    gapiReady=true;
+    await gapi.client.init({discoveryDocs:[
+      'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+      'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest',
+      'https://sheets.googleapis.com/$discovery/rest?version=v4'
+    ]});
   });
   tokenClient=google.accounts.oauth2.initTokenClient({
     client_id:CLIENT_ID,scope:SCOPES,
@@ -296,10 +336,14 @@ function initGoogle(){
   });
 }
 function handleGoogleAuth(){
-  if(accessToken){accessToken=null;gapi.client.setToken(null);document.getElementById('googleAuthLabel').textContent='Connecter';document.getElementById('btnGoogleAuth').classList.remove('connected');}
-  else tokenClient.requestAccessToken({prompt:'consent'});
+  if(accessToken){
+    accessToken=null;gapi.client.setToken(null);
+    document.getElementById('googleAuthLabel').textContent='Connecter';
+    document.getElementById('btnGoogleAuth').classList.remove('connected');
+  }else tokenClient.requestAccessToken({prompt:'consent'});
 }
 
+// ─── FORM ─────────────────────────────────────────────────────────
 function selectType(btn){
   document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');currentType=btn.dataset.type;
@@ -392,6 +436,7 @@ function buildChecklist(){
   const items=[
     {ok:!!v('clientName'),label:'Nom client',val:v('clientName')||'⚠ manquant'},
     {ok:!!v('clientPhone'),label:'Téléphone',val:v('clientPhone')||'⚠ manquant'},
+    {ok:!!v('clientEmail'),label:'Email client',val:v('clientEmail')||'⚠ mail auto désactivé'},
     {ok:!!v('vehicleModel'),label:'Véhicule / activité',val:v('vehicleModel')||'⚠ manquant'},
     {ok:!!v('partenaire'),label:'Partenaire',val:PART_LABEL[v('partenaire')]||'⚠ À vérifier'},
     {ok:!!v('dateStart'),label:'Date début',val:v('dateStart')||'⚠ manquant'},
@@ -412,39 +457,43 @@ function collectData(){
     prixPartenaire:v('prixPartenaire'),prixVente:v('prixVente'),notes:v('notes'),finance:fd.finance||{}};
 }
 
-const SYS=`Tu es l'assistant de réservation de Peyra Voyage, agence locale à Zakynthos fondée par Remy Rondeau. Génère des messages précis, voix humaine (jamais style IA), tutoiement côté client français. RÈGLE ABSOLUE : le partenaire ne voit JAMAIS le prix de vente, la marge, ni l'acompte réel client. Réponds UNIQUEMENT avec le message demandé, sans introduction ni commentaire.`;
-
+// ─── HELPERS ──────────────────────────────────────────────────────
+function generateOrderId(){const now=new Date();return`PV-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${Math.floor(1000+Math.random()*9000)}`;}
 function lieuStr(d){
   if(d.lieu==='aeroport')return`Aéroport de Zakynthos (vol aller : ${d.volAller||'À VÉRIFIER'})`;
   if(d.lieu==='hotel')return`Hôtel ${d.hotel}`;
-  if(d.lieu==='port_nord')return'Port Nord (Redon)';if(d.lieu==='port_sud')return'Port Sud (Orestis)';
+  if(d.lieu==='port_nord')return'Port Nord (Redon)';
+  if(d.lieu==='port_sud')return'Port Sud (Orestis)';
   if(d.lieu==='ks_storage')return'KS Storage';return d.lieu;
 }
 function assStr(d){
   const f=d.finance;if(!d.assurance||d.assurance==='basique')return'Basique (0€)';
   return`Complète (${f.assJ}€/j × ${f.j}j = ${Math.round(f.totalAss)}€)`;
 }
-function fmtDate(dateStr){
-  if(!dateStr)return'';
-  const[y,m,day]=dateStr.split('-');
-  const months=['jan','fév','mars','avr','mai','juin','juil','août','sep','oct','nov','déc'];
-  return`${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
-}
+function fmtDate(s){if(!s)return'';const[y,m,day]=s.split('-');return`${parseInt(day)} ${MONTHS[parseInt(m)-1]} ${y}`;}
+function showBanner(id,type,html){const el=document.getElementById(id);el.className=`banner ${type}`;el.innerHTML=html;el.classList.remove('hidden');}
+
+// ─── PROMPTS ──────────────────────────────────────────────────────
+const SYS=`Tu es l'assistant de réservation de Peyra Voyage, agence locale à Zakynthos fondée par Remy Rondeau. Génère des messages précis, voix humaine (jamais style IA), tutoiement côté client français. RÈGLE ABSOLUE : le partenaire ne voit JAMAIS le prix de vente, la marge, ni l'acompte réel client. Réponds UNIQUEMENT avec le message demandé, sans introduction ni commentaire.`;
 
 function buildPrompt(tab,d){
   const f=d.finance,fmt=v=>Math.round(v)+'€',pl=PART_LABEL[d.partenaire]||d.partenaire;
   if(tab==='partenaire'){
-    if(['voiture','quad','buggy_location'].includes(d.type))return`Message partenaire EN ANGLAIS pour Makis Famozo.\nType : ${d.type} | Véhicule : ${d.model} | ${d.nbJours} jours\nClient : ${d.client} | ${d.phone}\nPick-up : ${lieuStr(d)} — ${d.dateStart} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}\nDrop-off : ${d.dateEnd} à ${d.heureEnd}${d.volRetour?' (vol '+d.volRetour+')':''}\nInsurance : ${assStr(d)}\nPartner price : ${d.prixPartenaire}€ | Insurance : ${fmt(f.totalAss)} | Total supplier : ${fmt(f.tp)}\nDeposit received (15% commission) : ${fmt(f.acompte)} | Balance on arrival : ${fmt(f.reste)}\nSigne "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
+    if(['voiture','quad','buggy_location'].includes(d.type))
+      return`Message partenaire EN ANGLAIS pour Makis Famozo.\nType : ${d.type} | Véhicule : ${d.model} | ${d.nbJours} jours\nClient : ${d.client} | ${d.phone}\nPick-up : ${lieuStr(d)} — ${d.dateStart} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}\nDrop-off : ${d.dateEnd} à ${d.heureEnd}${d.volRetour?' (vol '+d.volRetour+')':''}\nInsurance : ${assStr(d)}\nPartner price : ${d.prixPartenaire}€ | Insurance : ${fmt(f.totalAss)} | Total supplier : ${fmt(f.tp)}\nDeposit received (15% commission) : ${fmt(f.acompte)} | Balance on arrival : ${fmt(f.reste)}\nSigne "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
     return`Message partenaire EN ANGLAIS pour ${pl}.\nActivité : ${d.type}${d.bateauNom?' — bateau '+d.bateauNom:''} | ${d.dureeH||''} ${d.nbPax?'| '+d.nbPax+' pers':''}\nClient : ${d.client} | ${d.phone}\nDate : ${d.dateStart} à ${d.heureStart} | Lieu : ${lieuStr(d)}\nPartner price : ${d.prixPartenaire}€\nSigne "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
   }
-  if(tab==='client')return`Message WhatsApp confirmation en FRANÇAIS, tutoiement, pour ${d.client}.\nType : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\n${d.nbJours?d.nbJours+' jours':d.dureeH||''}\nDates : ${d.dateStart} ${d.heureStart} → ${d.dateEnd||''} ${d.heureEnd||''}\nLieu : ${lieuStr(d)}${d.volRetour?' | Vol retour : '+d.volRetour:''}\nAssurance : ${assStr(d)}\nTotal : ${fmt(f.tc)} | Acompte réglé : ${fmt(f.acompte)} | Reste sur place : ${fmt(f.reste)} (en espèces)\n${d.lieu==='aeroport'?'Inclure lien parking : https://share.google/Q89P0IKB67oOQuGNa':''}\n${d.lieu==='hotel'?'Inclure localisation parking : https://maps.apple/p/-rcfD085WY4_iJ':''}\n${d.lieu==='port_nord'?'Inclure lien port Redon : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38':''}\n${d.lieu==='port_sud'?'Inclure lien port Orestis : https://maps.app.goo.gl/wCNuDYorgRN2kUS89':''}\nSigne "Remy de Peyra Voyage".`;
-  if(tab==='j1')return`Message rappel J-1 pour description event Google Calendar. Cadré "demain". Tutoiement. Signé "Remy de Peyra Voyage 💙💙".\nClient : ${d.client}\nType : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\nDemain : ${d.dateStart} à ${d.heureStart} — ${lieuStr(d)}\nReste sur place : ${fmt(f.reste)} (en espèces)\n${d.partenaire?.includes('self')?'DEMANDER photo CNI/passeport de chaque participant.':''}\n${d.partenaire?.includes('skipper')?'NE PAS demander CNI/passeport.':''}`;
+  if(tab==='client')
+    return`Message WhatsApp confirmation en FRANÇAIS, tutoiement, pour ${d.client}.\nType : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\n${d.nbJours?d.nbJours+' jours':d.dureeH||''}\nDates : ${d.dateStart} ${d.heureStart} → ${d.dateEnd||''} ${d.heureEnd||''}\nLieu : ${lieuStr(d)}${d.volRetour?' | Vol retour : '+d.volRetour:''}\nAssurance : ${assStr(d)}\nTotal : ${fmt(f.tc)} | Acompte réglé : ${fmt(f.acompte)} | Reste sur place : ${fmt(f.reste)} (en espèces)\nN° réservation : ${currentOrderId}\n${d.lieu==='aeroport'?'Inclure lien parking : https://share.google/Q89P0IKB67oOQuGNa':''}\n${d.lieu==='hotel'?'Inclure lien parking hôtel : https://maps.apple/p/-rcfD085WY4_iJ':''}\n${d.lieu==='port_nord'?'Inclure lien port Redon : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38':''}\n${d.lieu==='port_sud'?'Inclure lien port Orestis : https://maps.app.goo.gl/wCNuDYorgRN2kUS89':''}\nSigne "Remy de Peyra Voyage".`;
+  if(tab==='j1')
+    return`Message rappel J-1 pour description event Google Calendar. Cadré "demain". Tutoiement. Signé "Remy de Peyra Voyage 💙💙".\nClient : ${d.client}\nType : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\nDemain : ${d.dateStart} à ${d.heureStart} — ${lieuStr(d)}\nReste sur place : ${fmt(f.reste)} (en espèces)\n${d.partenaire?.includes('self')?'DEMANDER photo CNI/passeport de chaque participant.':''}\n${d.partenaire?.includes('skipper')?'NE PAS demander CNI/passeport.':''}`;
   if(tab==='calendar'){
     let colorId=COLOR_MAP[d.type]||3;
     if(d.type==='bateau')colorId=d.partenaire?.includes('skipper')?7:d.partenaire==='elena'?2:9;
-    return`Génère les infos pour créer les events Google Calendar (Peyra Voyage).\nType : ${d.type} | Partenaire : ${pl} | colorId : ${colorId}\nClient : ${d.client} | ${d.phone} | ${d.nat}\nActivité : ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\nPrise en charge : ${d.dateStart} à ${d.heureStart} — ${lieuStr(d)}\n${d.dateEnd?'Retour : '+d.dateEnd+' à '+d.heureEnd:''}\nFinance : Total ${fmt(f.tc)} | Acompte ${fmt(f.acompte)} | Reste ${fmt(f.reste)}\nFuseau : Europe/Athens. Rappel popup 1440min avant pickup.\nPour véhicules : 2 events (pickup 1h + retour 30min). Pour bateaux/excursions : 1 event.\nInclure le message J-1 complet dans la description.`;
+    return`Génère les infos pour créer les events Google Calendar.\nType : ${d.type} | colorId : ${colorId} | Partenaire : ${pl}\nClient : ${d.client} | ${d.phone} | ${d.nat} | N° : ${currentOrderId}\nActivité : ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\nPrise en charge : ${d.dateStart} à ${d.heureStart} — ${lieuStr(d)}\n${d.dateEnd?'Retour : '+d.dateEnd+' à '+d.heureEnd:''}\nTotal : ${fmt(f.tc)} | Acompte : ${fmt(f.acompte)} | Reste : ${fmt(f.reste)}\nFuseau : Europe/Athens. Rappel popup 1440min.\nPour véhicules : 2 events. Pour bateaux/excursions : 1 event. Inclure message J-1 dans description.`;
   }
-  if(tab==='facture')return`Génère uniquement les données JSON pour la facture Peyra Voyage, sans autre texte.\nFormat STRICT : {"nom":"${d.client}","dateRange":"Du ${fmtDate(d.dateStart)} au ${fmtDate(d.dateEnd)||fmtDate(d.dateStart)}","description":"${d.model}${d.bateauNom?' — '+d.bateauNom:''}","tarifJour":${d.prixVente&&d.nbJours?Math.round((parseFloat(d.prixVente)/d.nbJours)*100)/100:0},"nbJours":${d.nbJours||1},"totalActivite":${d.prixVente||0},"assuranceType":"${d.assurance==='basique'?'Non':'Oui'}","assuranceJour":${f.assJ||0},"assuranceNbJours":${f.j||0},"assuranceTotal":${Math.round(f.totalAss)||0},"acompte":${Math.round(f.acompte)||0},"reste":${Math.round(f.reste)||0}}\nRéponds UNIQUEMENT avec ce JSON, sans markdown ni texte.`;
+  if(tab==='facture')
+    return`Réponds UNIQUEMENT avec ce JSON sans markdown :\n{"nom":"${d.client}","orderId":"${currentOrderId}","dateRange":"Du ${fmtDate(d.dateStart)} au ${fmtDate(d.dateEnd)||fmtDate(d.dateStart)}","description":"${d.model}${d.bateauNom?' — '+d.bateauNom:''}","tarifJour":${d.prixVente&&d.nbJours?Math.round((parseFloat(d.prixVente)/d.nbJours)*100)/100:0},"nbJours":${d.nbJours||1},"totalActivite":${parseFloat(d.prixVente)||0},"assuranceType":"${d.assurance==='basique'?'Non':'Oui'}","assuranceJour":${f.assJ||0},"assuranceNbJours":${f.j||0},"assuranceTotal":${Math.round(f.totalAss)||0},"acompte":${Math.round(f.acompte)||0},"reste":${Math.round(f.reste)||0}}`;
 }
 
 async function callClaude(prompt){
@@ -459,14 +508,14 @@ async function callClaude(prompt){
 }
 
 const TABS=['partenaire','client','j1','calendar','facture'];
-const TAB_LABELS=['Message partenaire','Message client','Rappel J-1','Infos calendrier','Facture PDF'];
+const TAB_LABELS=['Message partenaire','Message client','Rappel J-1','Infos calendrier','Facture'];
 
 async function generateAll(){
-  if(!apiKey){document.getElementById('apiModal').style.display='flex';return;}
+  if(!apiKey){openConfig();return;}
+  currentOrderId=generateOrderId();
   goStep(4);
   lastData=collectData();results={};
-  document.getElementById('successBanner').classList.add('hidden');
-  document.getElementById('calStatus').classList.add('hidden');
+  ['bannerSuccess','bannerCal','bannerSheet','bannerMail'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   for(let i=0;i<TABS.length;i++){
     document.getElementById('progressFill').style.width=Math.round((i/TABS.length)*100)+'%';
     document.getElementById('progressLabel').textContent='Génération : '+TAB_LABELS[i]+'…';
@@ -474,11 +523,18 @@ async function generateAll(){
   }
   document.getElementById('progressFill').style.width='100%';
   document.getElementById('progressLabel').textContent='';
-  document.getElementById('successBanner').classList.remove('hidden');
+  document.getElementById('bannerSuccess').classList.remove('hidden');
   showTab('partenaire',document.querySelector('.tab'));
-  if(accessToken)setTimeout(()=>createCalendarEvents(),600);
+  if(accessToken){
+    setTimeout(()=>createCalendarEvents(),400);
+    setTimeout(()=>appendToSheet(),800);
+    setTimeout(()=>sendConfirmationEmail(),1200);
+  }else{
+    showBanner('bannerMail','info','<i class="ti ti-info-circle"></i> Connecte Google pour Calendar, Sheet et mail auto');
+  }
 }
 
+// ─── TABS ─────────────────────────────────────────────────────────
 function showTab(tab,el){
   currentTab=tab;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -486,186 +542,245 @@ function showTab(tab,el){
   const dots=document.getElementById('tabDots'),body=document.getElementById('resultBody');
   const btnWA=document.getElementById('btnWA'),btnPDF=document.getElementById('btnPDF');
   btnWA.classList.add('hidden');btnPDF.classList.add('hidden');
-  document.getElementById('btnCalendar').classList.add('hidden');
   if(results[tab]){
     dots.style.display='none';body.classList.remove('hidden');body.textContent=results[tab];
-    if(tab==='partenaire'&&lastData?.phone){
+    if((tab==='partenaire'||tab==='client')&&lastData?.phone){
       const phone=lastData.phone.replace(/\s/g,'');
       btnWA.href=`https://wa.me/${phone.startsWith('+')?phone.slice(1):phone}?text=${encodeURIComponent(results[tab])}`;
       btnWA.classList.remove('hidden');
     }
-    if(tab==='client'&&lastData?.phone){
-      const phone=lastData.phone.replace(/\s/g,'');
-      btnWA.href=`https://wa.me/${phone.startsWith('+')?phone.slice(1):phone}?text=${encodeURIComponent(results[tab])}`;
-      btnWA.classList.remove('hidden');
-    }
-    if(tab==='facture'){btnPDF.classList.remove('hidden');}
-    if(tab==='calendar'&&!accessToken)document.getElementById('btnCalendar').classList.remove('hidden');
+    if(tab==='facture')btnPDF.classList.remove('hidden');
   }else{dots.style.display='flex';body.classList.add('hidden');}
 }
-
 function copyResult(){
   navigator.clipboard.writeText(results[currentTab]||'').then(()=>{
-    const btns=document.querySelectorAll('.action-btn');
-    const copyBtn=Array.from(btns).find(b=>b.textContent.includes('Copier'));
-    if(copyBtn){const orig=copyBtn.innerHTML;copyBtn.innerHTML='<i class="ti ti-check"></i> Copié !';setTimeout(()=>copyBtn.innerHTML=orig,2000);}
+    const cb=Array.from(document.querySelectorAll('.action-btn')).find(b=>b.textContent.includes('Copier'));
+    if(cb){const o=cb.innerHTML;cb.innerHTML='<i class="ti ti-check"></i> Copié !';setTimeout(()=>cb.innerHTML=o,2000);}
   });
 }
 
-// ─── PDF GENERATION ───────────────────────────────────────────────
-function downloadPDF(){
+// ─── PDF ──────────────────────────────────────────────────────────
+function getInvoiceData(){
   const d=lastData,f=d?.finance||{};
-  let invoiceData={};
-  try{
-    const txt=results['facture']||'{}';
-    const clean=txt.replace(/```json|```/g,'').trim();
-    invoiceData=JSON.parse(clean);
-  }catch(e){
-    invoiceData={nom:d?.client||'',dateRange:`Du ${fmtDate(d?.dateStart)} au ${fmtDate(d?.dateEnd)}`,
-      description:d?.model||'',tarifJour:d?.prixVente&&d?.nbJours?Math.round((parseFloat(d.prixVente)/d.nbJours)*100)/100:0,
-      nbJours:d?.nbJours||1,totalActivite:parseFloat(d?.prixVente)||0,
-      assuranceType:d?.assurance==='basique'?'Non':'Oui',assuranceJour:f.assJ||0,
-      assuranceNbJours:f.j||0,assuranceTotal:Math.round(f.totalAss)||0,
-      acompte:Math.round(f.acompte)||0,reste:Math.round(f.reste)||0};
-  }
-  generatePDF(invoiceData);
+  try{return JSON.parse((results['facture']||'{}').replace(/```json|```/g,'').trim());}
+  catch{return{nom:d?.client||'',orderId:currentOrderId,dateRange:`Du ${fmtDate(d?.dateStart)} au ${fmtDate(d?.dateEnd)}`,
+    description:d?.model||'',tarifJour:0,nbJours:d?.nbJours||1,totalActivite:parseFloat(d?.prixVente)||0,
+    assuranceType:d?.assurance==='basique'?'Non':'Oui',assuranceJour:f.assJ||0,assuranceNbJours:f.j||0,
+    assuranceTotal:Math.round(f.totalAss)||0,acompte:Math.round(f.acompte)||0,reste:Math.round(f.reste)||0};}
 }
-
-function generatePDF(inv){
-  const {jsPDF}=window.jspdf;
+function buildPDF(inv){
+  const{jsPDF}=window.jspdf;
   const doc=new jsPDF({unit:'mm',format:'a4'});
-  const W=210,H=297;
-  const blue='#1a6fa3',dark='#0d3d5c',grey='#6b7280',lightGrey='#9ca3af';
-
-  // Logo text (since we can't embed external images in jsPDF easily)
-  // Left side logo area
-  doc.setFontSize(28);doc.setFont('helvetica','bold');doc.setTextColor(dark);
-  doc.text('PEYRA',20,35);
-  doc.setFontSize(14);doc.setFont('helvetica','normal');doc.setTextColor(grey);
-  doc.text('voyage',20,44);
-  // Draw concentric circles as logo
-  doc.setDrawColor(blue);doc.setLineWidth(1.5);
-  doc.circle(13,25,8);doc.circle(13,25,5.5);doc.circle(13,25,3);
-
-  // Right side header
-  doc.setFontSize(14);doc.setFont('helvetica','bold');doc.setTextColor(dark);
-  doc.text('PEYRA VOYAGE',W-20,20,{align:'right'});
-  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(lightGrey);
-  doc.text('A G E N C E  L O C A L E',W-20,26,{align:'right'});
-  doc.setFontSize(32);doc.setFont('helvetica','bold');doc.setTextColor(dark);
-  doc.text('FACTURE',W-20,45,{align:'right'});
-
-  // Client info
-  let y=70;
-  doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(dark);
-  doc.text('NOM:',20,y);
-  doc.setFont('helvetica','normal');doc.setTextColor(grey);
-  doc.text(inv.nom||'',45,y);
-  y+=9;
-  doc.setFont('helvetica','bold');doc.setTextColor(dark);
-  doc.text('DATE:',20,y);
-  doc.setFont('helvetica','normal');doc.setTextColor(grey);
-  doc.text(inv.dateRange||'',45,y);
-
-  // Separator
-  y+=12;doc.setDrawColor(dark);doc.setLineWidth(0.4);doc.line(20,y,W-20,y);y+=8;
-
-  // Table header
+  const W=210,blue='#1a6fa3',dark='#0d3d5c',grey='#6b7280',lgrey='#9ca3af';
+  doc.setDrawColor(blue);doc.setLineWidth(1.8);doc.circle(16,22,10);
+  doc.setLineWidth(1.2);doc.circle(16,22,7);
+  doc.setLineWidth(0.8);doc.circle(16,22,4);
+  doc.setFontSize(22);doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('PEYRA',30,19);
+  doc.setFontSize(11);doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.text('voyage',30,27);
+  doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('PEYRA VOYAGE',W-20,14,{align:'right'});
+  doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.setTextColor(lgrey);doc.text('A G E N C E  L O C A L E',W-20,20,{align:'right'});
+  doc.setFontSize(30);doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('FACTURE',W-20,38,{align:'right'});
+  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(lgrey);doc.text(inv.orderId||'',W-20,44,{align:'right'});
+  let y=60;
+  doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('NOM:',20,y);
+  doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.text(inv.nom||'',48,y);y+=9;
+  doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('DATE:',20,y);
+  doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.text(inv.dateRange||'',48,y);
+  y+=14;doc.setDrawColor(dark);doc.setLineWidth(0.4);doc.line(20,y,W-20,y);y+=7;
   doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(dark);
-  doc.text('DESCRIPTION',20,y);doc.text('MONTANT',115,y,{align:'center'});
-  doc.text('JOURS',150,y,{align:'center'});doc.text('TOTAL',W-20,y,{align:'right'});
-  y+=4;doc.setLineWidth(0.4);doc.line(20,y,W-20,y);y+=8;
-
-  // Row 1 - activité
+  doc.text('DESCRIPTION',20,y);doc.text('MONTANT',118,y,{align:'center'});doc.text('JOURS',152,y,{align:'center'});doc.text('TOTAL',W-20,y,{align:'right'});
+  y+=4;doc.line(20,y,W-20,y);y+=9;
   doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.setFontSize(10);
-  doc.text(inv.description||'',20,y);
-  doc.text(`${inv.tarifJour}€`,115,y,{align:'center'});
-  doc.text(String(inv.nbJours||1),150,y,{align:'center'});
-  doc.text(`${inv.totalActivite}€`,W-20,y,{align:'right'});
-  y+=12;
-
-  // Row 2 - assurance
-  doc.text('Assurance complète',20,y);
-  doc.text('(facultatif)',20,y+5);
-  if(inv.assuranceType==='Non'){
-    doc.text('Non',115,y+2.5,{align:'center'});doc.text('X',150,y+2.5,{align:'center'});doc.text('0€',W-20,y+2.5,{align:'right'});
-  }else{
-    doc.text(`${inv.assuranceJour}€`,115,y+2.5,{align:'center'});doc.text(String(inv.assuranceNbJours),150,y+2.5,{align:'center'});doc.text(`${inv.assuranceTotal}€`,W-20,y+2.5,{align:'right'});
-  }
-  y+=18;
-
-  // Bottom separator
-  doc.setLineWidth(0.4);doc.line(20,y,W-20,y);y+=10;
-
-  // Totals
+  doc.text(inv.description||'',20,y);doc.text(`${inv.tarifJour}€`,118,y,{align:'center'});doc.text(String(inv.nbJours||1),152,y,{align:'center'});doc.text(`${inv.totalActivite}€`,W-20,y,{align:'right'});
+  y+=14;
+  doc.text('Assurance complète',20,y);doc.text('(facultatif)',20,y+5);
+  if(inv.assuranceType==='Non'){doc.text('Non',118,y+2.5,{align:'center'});doc.text('X',152,y+2.5,{align:'center'});doc.text('0€',W-20,y+2.5,{align:'right'});}
+  else{doc.text(`${inv.assuranceJour}€`,118,y+2.5,{align:'center'});doc.text(String(inv.assuranceNbJours),152,y+2.5,{align:'center'});doc.text(`${inv.assuranceTotal}€`,W-20,y+2.5,{align:'right'});}
+  y+=20;doc.line(20,y,W-20,y);y+=10;
   doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.setFontSize(10);
-  doc.text('MONTANT PRÉPAYÉ',W-60,y,{align:'right'});doc.text(`${inv.acompte}€`,W-20,y,{align:'right'});y+=9;
-  doc.text('RESTE À PAYER SUR PLACE',W-60,y,{align:'right'});doc.text(`${inv.reste}€`,W-20,y,{align:'right'});y+=4;
-  doc.setLineWidth(0.4);doc.line(W-90,y,W-20,y);y+=16;
-
-  // Infos
+  doc.text('MONTANT PRÉPAYÉ',W-62,y,{align:'right'});doc.text(`${inv.acompte}€`,W-20,y,{align:'right'});y+=9;
+  doc.text('RESTE À PAYER SUR PLACE',W-62,y,{align:'right'});doc.text(`${inv.reste}€`,W-20,y,{align:'right'});y+=4;
+  doc.line(W-92,y,W-20,y);y+=16;
   doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.setFontSize(11);doc.text('INFOS',20,y);y+=7;
   doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.setFontSize(10);
   doc.text('Carte de débit acceptées',20,y);y+=6;
   doc.text('Pas de caution ou dépôt de garanties supplémentaire',20,y);y+=6;
   doc.text('20% du montant doit être payé avant la réservation pour confirmer',20,y);
+  const fy=277;doc.setDrawColor(dark);doc.setLineWidth(0.4);doc.line(20,fy-6,W-20,fy-6);
+  doc.setDrawColor(blue);doc.setLineWidth(1.2);doc.circle(W/2,fy+2,4.5);doc.setLineWidth(0.8);doc.circle(W/2,fy+2,2.8);doc.setLineWidth(0.5);doc.circle(W/2,fy+2,1.4);
+  doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(lgrey);
+  doc.text('Peyra Voyage, 291 00 Zakynthos  —  +33 6 50 63 32 40  —  contact@peyravoyage.com',W/2,fy+10,{align:'center'});
+  return doc;
+}
+function downloadPDF(){buildPDF(getInvoiceData()).save(`Facture - ${lastData?.client||'Client'}.pdf`);}
+function pdfToBase64(doc){const b=new Uint8Array(doc.output('arraybuffer'));let s='';b.forEach(x=>s+=String.fromCharCode(x));return btoa(s);}
 
-  // Footer
-  const footY=H-18;
-  doc.setDrawColor(dark);doc.setLineWidth(0.4);doc.line(20,footY-8,W-20,footY-8);
-  // Small circle logo in footer
-  doc.setDrawColor(blue);doc.setLineWidth(1);
-  doc.circle(W/2,footY-2,4);doc.circle(W/2,footY-2,2.5);doc.circle(W/2,footY-2,1.2);
-  doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(lightGrey);
-  doc.text('Peyra Voyage, 291 00 Zakynthos  -  +33 6 50 63 32 40  -  contact@peyravoyage.com',W/2,footY+6,{align:'center'});
+// ─── GOOGLE SHEETS ────────────────────────────────────────────────
+async function appendToSheet(){
+  if(!accessToken||!sheetId)return;
+  showBanner('bannerSheet','loading','<i class="ti ti-loader"></i> Mise à jour Google Sheet…');
+  try{
+    const d=lastData,f=d.finance;
+    const fmt=v=>Math.round(v);
+    // Determine sheet color key
+    let colorKey=d.type;
+    if(d.type==='bateau'){
+      colorKey=d.partenaire?.includes('skipper')?'bateau_skipper':d.partenaire==='elena'?'elena':'bateau_self';
+    }
+    const sheetColor=SHEET_COLORS[colorKey]||'FFFFFF';
 
-  doc.save(`Facture - ${inv.nom||'Client'}.pdf`);
+    // First check if headers exist, if not create them
+    let sheetRes;
+    try{
+      sheetRes=await gapi.client.sheets.spreadsheets.values.get({spreadsheetId:sheetId,range:'Feuille1!A1:Q1'});
+    }catch(e){sheetRes={result:{values:[]}};}
+
+    if(!sheetRes.result.values||!sheetRes.result.values[0]||sheetRes.result.values[0][0]!=='N°'){
+      // Create headers
+      await gapi.client.sheets.spreadsheets.values.update({
+        spreadsheetId:sheetId,range:'Feuille1!A1:Q1',valueInputOption:'RAW',
+        resource:{values:[['N°','Date début','Date fin','Mois','Type','Client','Téléphone','Nationalité','Véhicule/Activité','Lieu','Assurance','Prix client €','Prix partenaire €','Commission €','Marge €','Gain Peyra €','Notes']]}
+      });
+      // Format header row
+      await gapi.client.sheets.spreadsheets.batchUpdate({
+        spreadsheetId:sheetId,
+        resource:{requests:[{
+          repeatCell:{range:{sheetId:0,startRowIndex:0,endRowIndex:1},
+            cell:{userEnteredFormat:{backgroundColor:{red:0.05,green:0.24,blue:0.36},textFormat:{bold:true,foregroundColor:{red:1,green:1,blue:1}}}},
+            fields:'userEnteredFormat(backgroundColor,textFormat)'}
+        }]}
+      });
+    }
+
+    // Get next row number
+    const countRes=await gapi.client.sheets.spreadsheets.values.get({spreadsheetId:sheetId,range:'Feuille1!A:A'});
+    const rowCount=(countRes.result.values||[]).length;
+    const nextN=rowCount>1?rowCount:1;
+    const now=new Date();
+    const mois=`${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+
+    // Type label for sheet
+    let typeLabel=d.type;
+    if(d.type==='bateau'){
+      if(d.partenaire?.includes('skipper'))typeLabel='Bateau partenaire skipper';
+      else if(d.partenaire==='elena')typeLabel='Bateau Elena';
+      else typeLabel='Bateau partenaire self-drive';
+    }else if(d.type==='voiture')typeLabel='Voiture';
+    else if(d.type==='quad')typeLabel='Quad/ATV';
+    else if(d.type==='buggy_excursion')typeLabel='Excursion buggy';
+    else if(d.type==='buggy_location')typeLabel='Location buggy';
+    else if(d.type==='transfert')typeLabel='Transfert';
+
+    const row=[
+      nextN,
+      d.dateStart||'',d.dateEnd||d.dateStart||'',mois,typeLabel,
+      d.client,d.phone,d.nat,
+      d.model+(d.bateauNom?' ('+d.bateauNom+')':''),
+      lieuStr(d),assStr(d),
+      fmt(f.tc),fmt(f.tp||0),fmt(f.comm||0),fmt(f.marge||0),fmt(f.gain||0),
+      d.notes||''
+    ];
+
+    await gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId:sheetId,range:'Feuille1!A:Q',valueInputOption:'RAW',
+      resource:{values:[row]}
+    });
+
+    // Color the new row
+    const newRowIndex=rowCount; // 0-based
+    const hexToRgb=hex=>{const r=parseInt(hex.slice(0,2),16)/255,g=parseInt(hex.slice(2,4),16)/255,b=parseInt(hex.slice(4,6),16)/255;return{red:r,green:g,blue:b};};
+    await gapi.client.sheets.spreadsheets.batchUpdate({
+      spreadsheetId:sheetId,
+      resource:{requests:[{
+        repeatCell:{
+          range:{sheetId:0,startRowIndex:newRowIndex,endRowIndex:newRowIndex+1},
+          cell:{userEnteredFormat:{backgroundColor:hexToRgb(sheetColor)}},
+          fields:'userEnteredFormat.backgroundColor'
+        }
+      }]}
+    });
+
+    showBanner('bannerSheet','ok',`<i class="ti ti-table-check"></i> Ligne ajoutée dans Google Sheet (n°${nextN}) ✓`);
+  }catch(e){
+    showBanner('bannerSheet','error',`<i class="ti ti-alert-circle"></i> Erreur Sheet : ${e.result?.error?.message||e.message}`);
+  }
+}
+
+// ─── GMAIL ────────────────────────────────────────────────────────
+function makeEmailRaw(to,bcc,subject,bodyHtml,pdfB64,pdfName){
+  const b='---PeyraVoyageBoundary';
+  const raw=[`From: Remy de Peyra Voyage <me>`,`To: ${to}`,`Bcc: ${bcc}`,`Subject: ${subject}`,
+    `MIME-Version: 1.0`,`Content-Type: multipart/mixed; boundary="${b}"`,``,
+    `--${b}`,`Content-Type: text/html; charset=UTF-8`,`Content-Transfer-Encoding: quoted-printable`,``,bodyHtml,``,
+    `--${b}`,`Content-Type: application/pdf; name="${pdfName}"`,`Content-Disposition: attachment; filename="${pdfName}"`,`Content-Transfer-Encoding: base64`,``,pdfB64,``,`--${b}--`
+  ].join('\r\n');
+  return btoa(unescape(encodeURIComponent(raw))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+async function sendConfirmationEmail(){
+  const d=lastData;
+  if(!d?.email||!accessToken)return;
+  showBanner('bannerMail','loading','<i class="ti ti-send"></i> Envoi du mail de confirmation…');
+  try{
+    const inv=getInvoiceData();
+    const pdfB64=pdfToBase64(buildPDF(inv));
+    const pdfName=`Facture - ${d.client} - ${currentOrderId}.pdf`;
+    const bodyHtml=`<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#333"><div style="background:#0d3d5c;padding:20px 24px;border-radius:8px 8px 0 0"><h1 style="color:white;font-size:20px;margin:0;letter-spacing:1px">PEYRA VOYAGE</h1><p style="color:rgba(255,255,255,.6);font-size:12px;margin:4px 0 0">Agence locale · Zakynthos</p></div><div style="background:white;padding:24px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px"><p style="font-size:13px;color:#6b7280;margin:0 0 16px">N° réservation : <strong>${currentOrderId}</strong></p><pre style="font-family:Arial,sans-serif;font-size:14px;line-height:1.7;white-space:pre-wrap;margin:0">${results['client']||''}</pre><hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0"><p style="font-size:12px;color:#9ca3af;text-align:center">Peyra Voyage · Zakynthos · <a href="mailto:contact@peyravoyage.com" style="color:#1a6fa3">contact@peyravoyage.com</a> · +33 6 50 63 32 40</p></div></div>`;
+    const subject=`Confirmation réservation ${currentOrderId} — ${d.client}`;
+    await gapi.client.gmail.users.messages.send({userId:'me',resource:{raw:makeEmailRaw(d.email,BCC,subject,bodyHtml,pdfB64,pdfName)}});
+    showBanner('bannerMail','ok',`<i class="ti ti-mail-check"></i> Mail + facture PDF envoyés à ${d.email} ✓`);
+  }catch(e){
+    showBanner('bannerMail','error',`<i class="ti ti-alert-circle"></i> Erreur mail : ${e.result?.error?.message||e.message}`);
+  }
 }
 
 // ─── CALENDAR ─────────────────────────────────────────────────────
 async function createCalendarEvents(){
-  if(!accessToken){tokenClient.requestAccessToken({prompt:''});return;}
+  if(!accessToken)return;
   const d=lastData,f=d.finance;
-  const calStatus=document.getElementById('calStatus');
-  calStatus.className='cal-status loading';calStatus.innerHTML='<i class="ti ti-loader"></i> Création des events…';calStatus.classList.remove('hidden');
+  showBanner('bannerCal','loading','<i class="ti ti-loader"></i> Création des events Calendar…');
   try{
     const isVehicle=['voiture','quad','buggy_location'].includes(d.type);
     let colorId=COLOR_MAP[d.type]||3;
     if(d.type==='bateau')colorId=d.partenaire?.includes('skipper')?7:d.partenaire==='elena'?2:9;
-    const j1msg=results['j1']||'';
-    const description=`— RÉCAPITULATIF —\nClient : ${d.client} | ${d.phone} | ${d.nat}\nActivité : ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\nPartenaire : ${PART_LABEL[d.partenaire]||d.partenaire}\nLieu : ${lieuStr(d)}\n${d.volAller?'Vol aller : '+d.volAller:''}${d.volRetour?' | Retour : '+d.volRetour:''}\n\n— FINANCIER —\nTotal : ${Math.round(f.tc)}€ | Acompte : ${Math.round(f.acompte)}€ | Reste : ${Math.round(f.reste)}€\n\n— MESSAGE J-1 —\n${j1msg}`;
-    const toISO=(date,time,addMin=0)=>{if(!date)return null;const dt=new Date(date+'T'+(time||'10:00')+':00');dt.setMinutes(dt.getMinutes()+addMin);return dt.toISOString();};
-    const pickupEvent={
+    const fmt=v=>Math.round(v)+'€';
+    const description=`— RÉCAPITULATIF —\nN° : ${currentOrderId}\nClient : ${d.client} | ${d.phone} | ${d.nat}\nActivité : ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\nPartenaire : ${PART_LABEL[d.partenaire]||d.partenaire}\nLieu : ${lieuStr(d)}\n${d.volAller?'Vol aller : '+d.volAller:''}${d.volRetour?' | Retour : '+d.volRetour:''}\n\n— FINANCIER —\nTotal : ${fmt(f.tc)} | Acompte : ${fmt(f.acompte)} | Reste : ${fmt(f.reste)}\n\n— J-1 (copier-coller) —\n${results['j1']||''}`;
+    const toISO=(date,time,add=0)=>{if(!date)return null;const dt=new Date(date+'T'+(time||'10:00')+':00');dt.setMinutes(dt.getMinutes()+add);return dt.toISOString();};
+    await gapi.client.calendar.events.insert({calendarId:'primary',resource:{
       summary:`${d.model}${d.bateauNom?' ('+d.bateauNom+')':''} — ${d.client}`,
       description,location:lieuStr(d),
       start:{dateTime:toISO(d.dateStart,d.heureStart),timeZone:'Europe/Athens'},
       end:{dateTime:toISO(d.dateStart,d.heureStart,isVehicle?60:(parseInt(d.dureeH)||4)*60),timeZone:'Europe/Athens'},
-      colorId:String(colorId),
-      reminders:{useDefault:false,overrides:[{method:'popup',minutes:1440}]}
-    };
-    await gapi.client.calendar.events.insert({calendarId:'primary',resource:pickupEvent});
+      colorId:String(colorId),reminders:{useDefault:false,overrides:[{method:'popup',minutes:1440}]}
+    }});
     if(isVehicle&&d.dateEnd){
       await gapi.client.calendar.events.insert({calendarId:'primary',resource:{
-        summary:`Retour ${d.type} — ${d.client}`,description:`Client : ${d.client} | ${d.phone}`,location:lieuStr(d),
+        summary:`Retour ${d.type} — ${d.client}`,
+        description:`Retour\nClient : ${d.client} | ${d.phone}\nN° : ${currentOrderId}`,
+        location:lieuStr(d),
         start:{dateTime:toISO(d.dateEnd,d.heureEnd),timeZone:'Europe/Athens'},
         end:{dateTime:toISO(d.dateEnd,d.heureEnd,30),timeZone:'Europe/Athens'},
         colorId:String(colorId),reminders:{useDefault:false,overrides:[]}
       }});
-      calStatus.className='cal-status ok';calStatus.innerHTML='<i class="ti ti-circle-check"></i> 2 events créés (pickup + retour) ✓';
-    }else{calStatus.className='cal-status ok';calStatus.innerHTML='<i class="ti ti-circle-check"></i> Event créé dans Google Calendar ✓';}
-  }catch(e){calStatus.className='cal-status error';calStatus.innerHTML='<i class="ti ti-alert-circle"></i> Erreur : '+(e.result?.error?.message||e.message);}
+      showBanner('bannerCal','ok','<i class="ti ti-circle-check"></i> 2 events créés dans Google Calendar ✓');
+    }else{
+      showBanner('bannerCal','ok','<i class="ti ti-circle-check"></i> Event créé dans Google Calendar ✓');
+    }
+  }catch(e){
+    showBanner('bannerCal','error',`<i class="ti ti-alert-circle"></i> Erreur Calendar : ${e.result?.error?.message||e.message}`);
+  }
 }
 
+// ─── RESET ────────────────────────────────────────────────────────
 function newReservation(){
-  currentType=null;results={};fd={};lastData=null;
+  currentType=null;results={};fd={};lastData=null;currentOrderId=null;
   document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById('btnStep1').disabled=true;
   ['clientName','clientEmail','clientPhone','clientNat','vehicleModel','prixPartenaire','prixVente','notes','hotelName','volAller','volRetour','dureeH','nbPax','dateStart','dateEnd','heureStart','heureEnd'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('daysBadgeWrap').classList.add('hidden');
   document.getElementById('progressFill').style.width='0%';
+  document.getElementById('progressLabel').textContent='';
   ['fTP','fC','fM','fA','fTC','fR'].forEach(id=>document.getElementById(id).textContent='—');
-  document.getElementById('calStatus').classList.add('hidden');
-  document.getElementById('successBanner').classList.add('hidden');
+  ['bannerSuccess','bannerCal','bannerSheet','bannerMail'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   goStep(1);
 }
 </script>
