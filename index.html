@@ -632,13 +632,16 @@ async function appendToSheet(){
     // First check if headers exist, if not create them
     let sheetRes;
     try{
-      sheetRes=await gapi.client.sheets.spreadsheets.values.get({spreadsheetId:sheetId,range:'Feuille1!A1:Q1'});
+      // Get first sheet name dynamically
+      const sheetMeta=await gapi.client.sheets.spreadsheets.get({spreadsheetId:sheetId});
+      const firstSheet=sheetMeta.result.sheets[0].properties.title;
+      sheetRes=await gapi.client.sheets.spreadsheets.values.get({spreadsheetId:sheetId,range:`${firstSheet}!A1:Q1`});
     }catch(e){sheetRes={result:{values:[]}};}
 
     if(!sheetRes.result.values||!sheetRes.result.values[0]||sheetRes.result.values[0][0]!=='N°'){
       // Create headers
       await gapi.client.sheets.spreadsheets.values.update({
-        spreadsheetId:sheetId,range:'Feuille1!A1:Q1',valueInputOption:'RAW',
+        spreadsheetId:sheetId,range:`${firstSheet}!A1:Q1`,valueInputOption:'RAW',
         resource:{values:[['N°','Date début','Date fin','Mois','Type','Client','Téléphone','Nationalité','Véhicule/Activité','Lieu','Assurance','Prix client €','Prix partenaire €','Commission €','Marge €','Gain Peyra €','Notes']]}
       });
       // Format header row
@@ -653,7 +656,7 @@ async function appendToSheet(){
     }
 
     // Get next row number
-    const countRes=await gapi.client.sheets.spreadsheets.values.get({spreadsheetId:sheetId,range:'Feuille1!A:A'});
+    const countRes=await gapi.client.sheets.spreadsheets.values.get({spreadsheetId:sheetId,range:`${firstSheet}!A:A`});
     const rowCount=(countRes.result.values||[]).length;
     const nextN=rowCount>1?rowCount:1;
     const now=new Date();
@@ -682,7 +685,7 @@ async function appendToSheet(){
     ];
 
     await gapi.client.sheets.spreadsheets.values.append({
-      spreadsheetId:sheetId,range:'Feuille1!A:Q',valueInputOption:'RAW',
+      spreadsheetId:sheetId,range:`${firstSheet}!A:Q`,valueInputOption:'RAW',
       resource:{values:[row]}
     });
 
@@ -709,7 +712,7 @@ async function appendToSheet(){
 // ─── GMAIL ────────────────────────────────────────────────────────
 function makeEmailRaw(to,bcc,subject,bodyHtml,pdfB64,pdfName){
   const b='---PeyraVoyageBoundary';
-  const raw=[`From: Remy de Peyra Voyage <me>`,`To: ${to}`,`Bcc: ${bcc}`,`Subject: ${subject}`,
+  const raw=[`From: Remy de Peyra Voyage <me>`,`To: ${to}`,`Bcc: ${bcc}`,`Subject: =?UTF-8?B?${btoa(unescape(encodeURIComponent(subject)))}?=`,
     `MIME-Version: 1.0`,`Content-Type: multipart/mixed; boundary="${b}"`,``,
     `--${b}`,`Content-Type: text/html; charset=UTF-8`,`Content-Transfer-Encoding: quoted-printable`,``,bodyHtml,``,
     `--${b}`,`Content-Type: application/pdf; name="${pdfName}"`,`Content-Disposition: attachment; filename="${pdfName}"`,`Content-Transfer-Encoding: base64`,``,pdfB64,``,`--${b}--`
