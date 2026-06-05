@@ -622,6 +622,9 @@ async function appendToSheet(){
   try{
     const d=lastData,f=d.finance;
     const fmt=v=>Math.round(v);
+    // Get sheet name first
+    const sheetMeta0=await gapi.client.sheets.spreadsheets.get({spreadsheetId:sheetId});
+    const firstSheet=sheetMeta0.result.sheets[0].properties.title;
     // Determine sheet color key
     let colorKey=d.type;
     if(d.type==='bateau'){
@@ -633,8 +636,6 @@ async function appendToSheet(){
     let sheetRes;
     try{
       // Get first sheet name dynamically
-      const sheetMeta=await gapi.client.sheets.spreadsheets.get({spreadsheetId:sheetId});
-      const firstSheet=sheetMeta.result.sheets[0].properties.title;
       sheetRes=await gapi.client.sheets.spreadsheets.values.get({spreadsheetId:sheetId,range:`${firstSheet}!A1:Q1`});
     }catch(e){sheetRes={result:{values:[]}};}
 
