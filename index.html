@@ -292,7 +292,7 @@ const REDON_SK=['Mira','Lina','Erwin','Zeus'],REDON_SF=['Alexandra','Valeria'];
 
 let currentType=null,currentTab='partenaire',results={},fd={};
 let apiKey=localStorage.getItem('peyra_api_key')||'';
-let sheetId=localStorage.getItem('peyra_sheet_id')||'1bOVgw0QyepkRecfHEPnieIYW9QCH0-jAjrCQzzQ6d1U';
+let sheetId=localStorage.getItem('peyra_sheet_id')||'11x05BO686VOYB-rguQtd4Gjcaf3l5KUwdE9S4jN-5Y0';
 let tokenClient=null,accessToken=null;
 let lastData=null,currentOrderId=null;
 
@@ -776,10 +776,26 @@ async function createCalendarEvents(){
 
 // ─── RESET ────────────────────────────────────────────────────────
 function newReservation(){
+  // Keep client info for potential same-client reuse
+  const keepClient={
+    name:document.getElementById('clientName')?.value||'',
+    email:document.getElementById('clientEmail')?.value||'',
+    phone:document.getElementById('clientPhone')?.value||'',
+    nat:document.getElementById('clientNat')?.value||''
+  };
   currentType=null;results={};fd={};lastData=null;currentOrderId=null;
   document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById('btnStep1').disabled=true;
-  ['clientName','clientEmail','clientPhone','clientNat','vehicleModel','prixPartenaire','prixVente','notes','hotelName','volAller','volRetour','dureeH','nbPax','dateStart','dateEnd','heureStart','heureEnd'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  // Clear reservation fields only
+  ['vehicleModel','prixPartenaire','prixVente','notes','hotelName','volAller','volRetour','dureeH','nbPax','dateStart','dateEnd','heureStart','heureEnd'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  // Restore client fields
+  if(keepClient.name)document.getElementById('clientName').value=keepClient.name;
+  if(keepClient.email)document.getElementById('clientEmail').value=keepClient.email;
+  if(keepClient.phone){
+    document.getElementById('clientPhone').value=keepClient.phone;
+    detectNat();
+  }
+  if(keepClient.nat)document.getElementById('clientNat').value=keepClient.nat;
   document.getElementById('daysBadgeWrap').classList.add('hidden');
   document.getElementById('progressFill').style.width='0%';
   document.getElementById('progressLabel').textContent='';
