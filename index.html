@@ -501,15 +501,16 @@ function buildPrompt(tab,d){
   if(tab==='partenaire'){
     if(['voiture','quad','buggy_location'].includes(d.type)){
       const assLine=d.assurance==='basique'?'Basic insurance (included)':`Full insurance (${f.assJ}€/day × ${f.j} day${f.j>1?'s':''} = ${Math.round(f.totalAss)}€)`;
+      const lieuPickupLabel=d.lieu==='hotel'?`Hotel ${d.hotel}`:d.lieu==='aeroport'?'Zakynthos Airport (ZTH)':d.lieu==='port_nord'?'North Port (Redon), Zakynthos':d.lieu==='port_sud'?'South Port (Orestis), Zakynthos':d.lieu==='ks_storage'?'KS Storage, Zakynthos':lieuStr(d);
       return`Booking confirmed for ${d.nbJours} day${d.nbJours>1?'s':''} car rental.
 Name: ${d.client}
 Phone number: ${d.phone}
 Vehicle: ${d.model} (or similar)
 Pick-up:
-${lieuPickupEN}
+${lieuPickupLabel}
 ${dateS.en} – ${d.heureStart}${d.volAller?' (Flight '+d.volAller+')':''}
 Drop-off:
-${lieuPickupEN}
+${lieuPickupLabel}
 ${dateE.en} – ${d.heureEnd}${d.volRetour?' (Flight '+d.volRetour+')':''}
 Insurance: ${assLine}
 Financial details:
@@ -522,29 +523,106 @@ Driving license attached
 Booking confirmed
 Remy de Peyra Voyage`;
     }
-    return`Message partenaire EN ANGLAIS pour ${pl}.\nActivité : ${d.type}${d.bateauNom?' — bateau '+d.bateauNom:''} | ${d.dureeH||''} ${d.nbPax?'| '+d.nbPax+' pers':''}\nClient : ${d.client} | ${d.phone}\nDate : ${d.dateStart} à ${d.heureStart} | Lieu : ${lieuStr(d)}\nPartner price : ${d.prixPartenaire}€\nSigne "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
+    // Bateau / excursion / transfert partenaire
+    const lieuEN=d.lieu==='port_nord'?'North Port (Redon), Zakynthos':d.lieu==='port_sud'?'South Port (Orestis), Zakynthos':d.lieu==='ks_storage'?'KS Storage, Zakynthos':d.lieu==='hotel'?`Hotel ${d.hotel}`:'Zakynthos Airport (ZTH)';
+    const skipper=d.partenaire?.includes('skipper')?'with skipper':'self-drive';
+    return`Booking confirmed.
+Name: ${d.client}
+Phone number: ${d.phone}
+Activity: ${d.type==='bateau'?`Boat rental ${skipper}${d.bateauNom?' — '+d.bateauNom:''}${d.dureeH?' — '+d.dureeH:''}`:d.type==='buggy_excursion'?`Buggy excursion${d.dureeH?' — '+d.dureeH:''}`:d.type==='transfert'?`Transfer${d.model?' — '+d.model:''}`:d.model}
+Date: ${dateS.en}
+Time: ${d.heureStart}
+Pick-up location: ${lieuEN}${d.nbPax?'
+Party size: '+d.nbPax+' people':''}
+Partner price: ${d.prixPartenaire}€
+Booking confirmed.
+Remy de Peyra Voyage`;
   }
 
   if(tab==='client'){
-    const assLigneClient=d.assurance==='basique'?'Assurance : basique (incluse)':`Assurance : Tous risques incluse`;
-    const typeEmoji=d.type==='bateau'?'⛵':d.type==='transfert'?'🚐':d.type==='buggy_excursion'||d.type==='buggy_location'?'🏎️':'🚗';
-    const typeLabel=d.type==='voiture'?'Location de voiture':d.type==='quad'?'Location de quad/scooter':d.type==='bateau'?'Location de bateau':d.type==='buggy_excursion'?'Excursion buggy':d.type==='buggy_location'?'Location de buggy':'Transfert';
-    return`Bonjour,
+    const assLigneFR=d.assurance==='basique'?'Assurance : basique (incluse)':`Assurance complète : ${Math.round(f.totalAss)} €`;
+    const lieuFRLabel=d.lieu==='hotel'?`directement à ton hôtel (${d.hotel})`:d.lieu==='aeroport'?`à l'aéroport de Zakynthos`:d.lieu==='port_nord'?'au Port Nord (Redon)':d.lieu==='port_sud'?'au Port Sud (Orestis)':d.lieu==='ks_storage'?'à KS Storage':lieuStr(d);
+    const lienFR=d.lieu==='aeroport'?'
+📍 Parking aéroport : https://share.google/Q89P0IKB67oOQuGNa':d.lieu==='hotel'?'
+📍 Localisation du parking : https://maps.apple/p/-rcfD085WY4_iJ':d.lieu==='port_nord'?'
+📍 Port Redon (nord) : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38':d.lieu==='port_sud'?'
+📍 Port Orestis (sud) : https://maps.app.goo.gl/wCNuDYorgRN2kUS89':'';
+    if(['voiture','quad','buggy_location'].includes(d.type)){
+      return`Bonjour ${prenom},
 
-Voici la confirmation de réservation pour ${d.client} (${d.phone}) :
+Je te confirme ta réservation pour ton séjour à Zakynthos
 
-${typeEmoji} ${typeLabel} – ${d.nbJours} jour${d.nbJours>1?'s':''}
 Véhicule : ${d.model} (ou similaire)
-${assLigneClient}
-📍 Prise en charge : ${lieuClientFR.replace('directement à ton hôtel','').replace("à l'",'')||lieuStr(d)} – ${dateS.fr.charAt(0).toUpperCase()+dateS.fr.slice(1)} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}
-📍 Restitution : ${lieuClientFR.replace('directement à ton hôtel','').replace("à l'",'')||lieuStr(d)} – ${dateE.fr.charAt(0).toUpperCase()+dateE.fr.slice(1)} à ${d.heureEnd}${d.volRetour?' (vol '+d.volRetour+')':''}
+Durée : ${d.nbJours} jour${d.nbJours>1?'s':''}
+Livraison ${lieuFRLabel}
+• Prise en charge : ${dateS.fr} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}
+• Retour : ${dateE.fr} à ${d.heureEnd} au même endroit${d.volRetour?' (vol '+d.volRetour+')':''}
 
-💳 Reste à régler à l'arrivée : ${Math.round(f.reste)}€
-(Le permis de conduire a bien été reçu)
+Récapitulatif :
+• Véhicule : ${Math.round(parseFloat(d.prixVente))} €
+• ${assLigneFR}
+Total : ${Math.round(f.tc)} €
+Dépôt déjà réglé : ${Math.round(f.acompte)} €
+Reste à payer sur place : ${Math.round(f.reste)} €
 
-Réservation confirmée ✅
-N'hésitez pas si vous avez la moindre question !
-Remy – Peyra Voyage`;
+Si tu as la moindre question n'hésites pas !${lienFR}
+Remy de Peyra Voyage`;
+    }
+    // Bateau
+    if(d.type==='bateau'){
+      const skipper=d.partenaire?.includes('skipper')?'avec skipper':'self-drive';
+      const portLien=d.lieu==='port_nord'||d.partenaire?.includes('redon')?'
+📍 Port Redon (nord) : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38':'
+📍 Port Orestis (sud) : https://maps.app.goo.gl/wCNuDYorgRN2kUS89';
+      return`Bonjour ${prenom},
+
+Je te confirme ta sortie en bateau à Zakynthos 🌊
+
+⛵ Bateau ${d.bateauNom||''} ${skipper}${d.dureeH?' — '+d.dureeH:''}
+${dateS.fr} à ${d.heureStart} → ${d.heureEnd||''}
+
+Récapitulatif :
+• Total : ${Math.round(f.tc)} €${d.partenaire?.includes('self')?' + essence':''}
+• Dépôt déjà réglé : ${Math.round(f.acompte)} €
+• Reste à payer sur place : ${Math.round(f.reste)} €${d.partenaire?.includes('self')?' + essence':''}
+
+Si tu as la moindre question n'hésites pas !${portLien}
+Remy de Peyra Voyage`;
+    }
+    // Excursion buggy
+    if(d.type==='buggy_excursion'){
+      return`Bonjour ${prenom},
+
+Je te confirme ton excursion buggy à Zakynthos 🏎️
+
+${dateS.fr} à ${d.heureStart}
+📍 RDV à KS Storage avec Gina ou Giannis${d.dureeH?' — durée : '+d.dureeH:''}
+
+Récapitulatif :
+• Total : ${Math.round(f.tc)} €
+• Dépôt déjà réglé : ${Math.round(f.acompte)} €
+• Reste à payer sur place : ${Math.round(f.reste)} €
+
+Pense à crème solaire, lunettes et eau ☀️
+Si tu as la moindre question n'hésites pas !
+Remy de Peyra Voyage`;
+    }
+    // Transfert
+    return`Bonjour ${prenom},
+
+Je te confirme ton transfert à Zakynthos 🚐
+
+${dateS.fr} à ${d.heureStart}
+📍 Prise en charge : ${lieuFRLabel}${d.volAller?' (vol '+d.volAller+')':''}
+${d.model?'Destination : '+d.model:''}
+
+Récapitulatif :
+• Total : ${Math.round(f.tc)} €
+• Dépôt déjà réglé : ${Math.round(f.acompte)} €
+• Reste à payer sur place : ${Math.round(f.reste)} €
+
+Si tu as la moindre question n'hésites pas !
+Remy de Peyra Voyage`;
   }
 
   if(tab==='j1')
