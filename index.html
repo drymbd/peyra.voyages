@@ -659,7 +659,13 @@ async function generateAll(){
   for(let i=0;i<TABS.length;i++){
     document.getElementById('progressFill').style.width=Math.round((i/TABS.length)*100)+'%';
     document.getElementById('progressLabel').textContent='Génération : '+TAB_LABELS[i]+'…';
-    results[TABS[i]]=await callClaude(buildPrompt(TABS[i],lastData));
+    const tab=TABS[i];
+    // partenaire and client are hardcoded — no API call needed
+    if(tab==='partenaire'||tab==='client'){
+      results[tab]=buildPrompt(tab,lastData);
+    }else{
+      results[tab]=await callClaude(buildPrompt(tab,lastData));
+    }
   }
   document.getElementById('progressFill').style.width='100%';
   document.getElementById('progressLabel').textContent='';
