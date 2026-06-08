@@ -526,14 +526,15 @@ Remy de Peyra Voyage`;
     // Bateau / excursion / transfert partenaire
     const lieuEN=d.lieu==='port_nord'?'North Port (Redon), Zakynthos':d.lieu==='port_sud'?'South Port (Orestis), Zakynthos':d.lieu==='ks_storage'?'KS Storage, Zakynthos':d.lieu==='hotel'?`Hotel ${d.hotel}`:'Zakynthos Airport (ZTH)';
     const skipper=d.partenaire?.includes('skipper')?'with skipper':'self-drive';
+    const activityDesc=d.type==='bateau'?('Boat rental '+skipper+(d.bateauNom?' — '+d.bateauNom:'')+(d.dureeH?' — '+d.dureeH:'')):d.type==='buggy_excursion'?('Buggy excursion'+(d.dureeH?' — '+d.dureeH:'')):d.type==='transfert'?('Transfer'+(d.model?' — '+d.model:'')):d.model;
+    const partySizeLine=d.nbPax?('\nParty size: '+d.nbPax+' people'):'';
     return`Booking confirmed.
 Name: ${d.client}
 Phone number: ${d.phone}
-Activity: ${d.type==='bateau'?`Boat rental ${skipper}${d.bateauNom?' — '+d.bateauNom:''}${d.dureeH?' — '+d.dureeH:''}`:d.type==='buggy_excursion'?`Buggy excursion${d.dureeH?' — '+d.dureeH:''}`:d.type==='transfert'?`Transfer${d.model?' — '+d.model:''}`:d.model}
+Activity: ${activityDesc}
 Date: ${dateS.en}
 Time: ${d.heureStart}
-Pick-up location: ${lieuEN}${d.nbPax?'
-Party size: '+d.nbPax+' people':''}
+Pick-up location: ${lieuEN}${partySizeLine}
 Partner price: ${d.prixPartenaire}€
 Booking confirmed.
 Remy de Peyra Voyage`;
@@ -542,11 +543,7 @@ Remy de Peyra Voyage`;
   if(tab==='client'){
     const assLigneFR=d.assurance==='basique'?'Assurance : basique (incluse)':`Assurance complète : ${Math.round(f.totalAss)} €`;
     const lieuFRLabel=d.lieu==='hotel'?`directement à ton hôtel (${d.hotel})`:d.lieu==='aeroport'?`à l'aéroport de Zakynthos`:d.lieu==='port_nord'?'au Port Nord (Redon)':d.lieu==='port_sud'?'au Port Sud (Orestis)':d.lieu==='ks_storage'?'à KS Storage':lieuStr(d);
-    const lienFR=d.lieu==='aeroport'?'
-📍 Parking aéroport : https://share.google/Q89P0IKB67oOQuGNa':d.lieu==='hotel'?'
-📍 Localisation du parking : https://maps.apple/p/-rcfD085WY4_iJ':d.lieu==='port_nord'?'
-📍 Port Redon (nord) : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38':d.lieu==='port_sud'?'
-📍 Port Orestis (sud) : https://maps.app.goo.gl/wCNuDYorgRN2kUS89':'';
+    const lienFR=(()=>{if(d.lieu==="aeroport")return"\n📍 Parking aéroport : https://share.google/Q89P0IKB67oOQuGNa";if(d.lieu==="hotel")return"\n📍 Localisation du parking : https://maps.apple/p/-rcfD085WY4_iJ";if(d.lieu==="port_nord")return"\n📍 Port Redon (nord) : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38";if(d.lieu==="port_sud")return"\n📍 Port Orestis (sud) : https://maps.app.goo.gl/wCNuDYorgRN2kUS89";return"";})();
     if(['voiture','quad','buggy_location'].includes(d.type)){
       return`Bonjour ${prenom},
 
@@ -571,9 +568,7 @@ Remy de Peyra Voyage`;
     // Bateau
     if(d.type==='bateau'){
       const skipper=d.partenaire?.includes('skipper')?'avec skipper':'self-drive';
-      const portLien=d.lieu==='port_nord'||d.partenaire?.includes('redon')?'
-📍 Port Redon (nord) : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38':'
-📍 Port Orestis (sud) : https://maps.app.goo.gl/wCNuDYorgRN2kUS89';
+      const portLien=(d.lieu==="port_nord"||(d.partenaire&&d.partenaire.includes("redon")))?"\n📍 Port Redon (nord) : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38":"\n📍 Port Orestis (sud) : https://maps.app.goo.gl/wCNuDYorgRN2kUS89";
       return`Bonjour ${prenom},
 
 Je te confirme ta sortie en bateau à Zakynthos 🌊
