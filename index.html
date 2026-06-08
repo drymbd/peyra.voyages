@@ -526,26 +526,25 @@ Remy de Peyra Voyage`;
   }
 
   if(tab==='client'){
-    const assLigneFR=d.assurance==='basique'?`Assurance : basique (incluse)`:`Assurance complète : ${Math.round(f.totalAss)} €`;
-    return`Bonjour ${prenom},
+    const assLigneClient=d.assurance==='basique'?'Assurance : basique (incluse)':`Assurance : Tous risques incluse`;
+    const typeEmoji=d.type==='bateau'?'⛵':d.type==='transfert'?'🚐':d.type==='buggy_excursion'||d.type==='buggy_location'?'🏎️':'🚗';
+    const typeLabel=d.type==='voiture'?'Location de voiture':d.type==='quad'?'Location de quad/scooter':d.type==='bateau'?'Location de bateau':d.type==='buggy_excursion'?'Excursion buggy':d.type==='buggy_location'?'Location de buggy':'Transfert';
+    return`Bonjour,
 
-Je te confirme ta réservation pour ton séjour à Zakynthos 🌊
+Voici la confirmation de réservation pour ${d.client} (${d.phone}) :
 
+${typeEmoji} ${typeLabel} – ${d.nbJours} jour${d.nbJours>1?'s':''}
 Véhicule : ${d.model} (ou similaire)
-Durée : ${d.nbJours} jour${d.nbJours>1?'s':''}
-Livraison ${lieuClientFR}
-• Prise en charge : ${dateS.fr} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}
-• Retour : ${dateE.fr} à ${d.heureEnd} ${lieuRetourFR}${d.volRetour?' (vol '+d.volRetour+')':''}
+${assLigneClient}
+📍 Prise en charge : ${lieuClientFR.replace('directement à ton hôtel','').replace("à l'",'')||lieuStr(d)} – ${dateS.fr.charAt(0).toUpperCase()+dateS.fr.slice(1)} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}
+📍 Restitution : ${lieuClientFR.replace('directement à ton hôtel','').replace("à l'",'')||lieuStr(d)} – ${dateE.fr.charAt(0).toUpperCase()+dateE.fr.slice(1)} à ${d.heureEnd}${d.volRetour?' (vol '+d.volRetour+')':''}
 
-Récapitulatif :
-• Véhicule : ${Math.round(parseFloat(d.prixVente))} €
-• ${assLigneFR}
-Total : ${Math.round(f.tc)} €
-Dépôt déjà réglé : ${Math.round(f.acompte)} €
-Reste à payer sur place : ${Math.round(f.reste)} €
+💳 Reste à régler à l'arrivée : ${Math.round(f.reste)}€
+(Le permis de conduire a bien été reçu)
 
-Si tu as la moindre question n'hésites pas !${lienLieu}
-Remy de Peyra Voyage`;
+Réservation confirmée ✅
+N'hésitez pas si vous avez la moindre question !
+Remy – Peyra Voyage`;
   }
 
   if(tab==='j1')
@@ -636,20 +635,17 @@ function buildPDF(inv){
   const doc=new jsPDF({unit:'mm',format:'a4'});
   const W=210,H=297,blue='#1a6fa3',dark='#0d3d5c',grey='#6b7280',lgrey='#9ca3af';
 
-  // ── LEFT LOGO — exact template match ──
-  // Concentric arcs (top half only, like the real logo)
-  doc.setDrawColor(grey);doc.setFillColor(grey);
-  // Draw full circles in grey (logo color from template)
-  doc.setDrawColor('#8a9bb0');doc.setLineWidth(2.5);doc.circle(22,30,14);
-  doc.setLineWidth(1.8);doc.circle(22,30,10);
-  doc.setLineWidth(1.2);doc.circle(22,30,6);
-  doc.setLineWidth(0.7);doc.circle(22,30,3);
-  // PEYRA big bold text
-  doc.setFontSize(26);doc.setFont('helvetica','bold');doc.setTextColor(blue);
-  doc.text('PEYRA',14,52);
-  // voyage small italic
-  doc.setFontSize(11);doc.setFont('helvetica','normal');doc.setTextColor(grey);
-  doc.text('v o y a g e',15,60);
+  // ── LEFT LOGO — real image ──
+  try{
+    const logoUrl='https://raw.githubusercontent.com/drymbd/peyra.voyages/main/Peyra_full_logo_.png';
+    doc.addImage(logoUrl,'PNG',10,8,55,65);
+  }catch(e){
+    // fallback text if image fails
+    doc.setFontSize(22);doc.setFont('helvetica','bold');doc.setTextColor(blue);
+    doc.text('PEYRA',14,40);
+    doc.setFontSize(10);doc.setFont('helvetica','normal');doc.setTextColor(grey);
+    doc.text('voyage',14,48);
+  }
 
   // ── RIGHT HEADER ──
   doc.setFontSize(14);doc.setFont('helvetica','bold');doc.setTextColor(dark);
