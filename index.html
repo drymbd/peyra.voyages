@@ -313,6 +313,10 @@ function saveConfig(){
 window.onload=()=>{
   if(!apiKey)openConfig();
   initGoogle();
+  restoreSession();
+  // Auto-save form on any input
+  document.addEventListener("input",saveFormSession);
+  document.addEventListener("change",saveFormSession);
 };
 
 // ─── GOOGLE AUTH ──────────────────────────────────────────────────
@@ -475,15 +479,75 @@ function showBanner(id,type,html){const el=document.getElementById(id);el.classN
 // ─── PROMPTS ──────────────────────────────────────────────────────
 const SYS=`Tu es l'assistant de réservation de Peyra Voyage, agence locale à Zakynthos fondée par Remy Rondeau. Génère des messages précis, voix humaine (jamais style IA), tutoiement côté client français. RÈGLE ABSOLUE : le partenaire ne voit JAMAIS le prix de vente, la marge, ni l'acompte réel client. Réponds UNIQUEMENT avec le message demandé, sans introduction ni commentaire.`;
 
+function fmtDateLong(s){
+  if(!s)return{fr:'',en:''};
+  const[y,m,day]=s.split('-');
+  const daysFR=['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  const daysEN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const monthsEN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dt=new Date(s+'T12:00:00');
+  return{fr:`${daysFR[dt.getDay()]} ${parseInt(day)} ${MONTHS[parseInt(m)-1]}`,en:`${daysEN[dt.getDay()]} ${parseInt(day)} ${monthsEN[parseInt(m)-1]}`};
+}
+
 function buildPrompt(tab,d){
   const f=d.finance,fmt=v=>Math.round(v)+'€',pl=PART_LABEL[d.partenaire]||d.partenaire;
+  const prenom=d.client.split(' ')[0];
+  const lieuPickupEN=d.lieu==='hotel'?`Hotel ${d.hotel}`:d.lieu==='aeroport'?'Zakynthos Airport':lieuStr(d);
+  const lieuClientFR=d.lieu==='hotel'?`directement à ton hôtel (${d.hotel})`:d.lieu==='aeroport'?`à l'aéroport`:`au ${lieuStr(d)}`;
+  const lieuRetourFR=d.lieu==='hotel'||d.lieu==='aeroport'?'au même endroit':'au même endroit';
+  const lienLieu=d.lieu==='aeroport'?`\n📍 Parking aéroport : https://share.google/Q89P0IKB67oOQuGNa`:d.lieu==='hotel'?`\n📍 Localisation du parking : https://maps.apple/p/-rcfD085WY4_iJ`:d.lieu==='port_nord'?`\n📍 Port Redon (nord) : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38`:d.lieu==='port_sud'?`\n📍 Port Orestis (sud) : https://maps.app.goo.gl/wCNuDYorgRN2kUS89`:'';
+  const dateS=fmtDateLong(d.dateStart),dateE=fmtDateLong(d.dateEnd||d.dateStart);
+
   if(tab==='partenaire'){
-    if(['voiture','quad','buggy_location'].includes(d.type))
-      return`Message partenaire EN ANGLAIS pour Makis Famozo.\nType : ${d.type} | Véhicule : ${d.model} | ${d.nbJours} jours\nClient : ${d.client} | ${d.phone}\nPick-up : ${lieuStr(d)} — ${d.dateStart} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}\nDrop-off : ${d.dateEnd} à ${d.heureEnd}${d.volRetour?' (vol '+d.volRetour+')':''}\nInsurance : ${assStr(d)}\nPartner price : ${d.prixPartenaire}€ | Insurance : ${fmt(f.totalAss)} | Total supplier : ${fmt(f.tp)}\nDeposit received (15% commission) : ${fmt(f.acompte)} | Balance on arrival : ${fmt(f.reste)}\nSigne "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
+    if(['voiture','quad','buggy_location'].includes(d.type)){
+      const assLine=d.assurance==='basique'?'Basic insurance (included)':`Full insurance (${f.assJ}€/day × ${f.j} day${f.j>1?'s':''} = ${Math.round(f.totalAss)}€)`;
+      return`Booking confirmed for ${d.nbJours} day${d.nbJours>1?'s':''} car rental.
+Name: ${d.client}
+Phone number: ${d.phone}
+Vehicle: ${d.model} (or similar)
+Pick-up:
+${lieuPickupEN}
+${dateS.en} – ${d.heureStart}${d.volAller?' (Flight '+d.volAller+')':''}
+Drop-off:
+${lieuPickupEN}
+${dateE.en} – ${d.heureEnd}${d.volRetour?' (Flight '+d.volRetour+')':''}
+Insurance: ${assLine}
+Financial details:
+Partner price: ${parseFloat(d.prixPartenaire).toFixed(2)}€
+Insurance: ${parseFloat(Math.round(f.totalAss)).toFixed(2)}€
+Total supplier amount: ${parseFloat(Math.round(f.tp)).toFixed(2)}€
+Deposit received: ${Math.round(f.acompte)}€ (15% commission on total amount)
+Remaining balance to be paid on arrival: ${Math.round(f.reste)}€
+Driving license attached
+Booking confirmed
+Remy de Peyra Voyage`;
+    }
     return`Message partenaire EN ANGLAIS pour ${pl}.\nActivité : ${d.type}${d.bateauNom?' — bateau '+d.bateauNom:''} | ${d.dureeH||''} ${d.nbPax?'| '+d.nbPax+' pers':''}\nClient : ${d.client} | ${d.phone}\nDate : ${d.dateStart} à ${d.heureStart} | Lieu : ${lieuStr(d)}\nPartner price : ${d.prixPartenaire}€\nSigne "Remy de Peyra Voyage". NE PAS mentionner prix de vente ni marge.`;
   }
-  if(tab==='client')
-    return`Message WhatsApp confirmation en FRANÇAIS, tutoiement, pour ${d.client}.\nType : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\n${d.nbJours?d.nbJours+' jours':d.dureeH||''}\nDates : ${d.dateStart} ${d.heureStart} → ${d.dateEnd||''} ${d.heureEnd||''}\nLieu : ${lieuStr(d)}${d.volRetour?' | Vol retour : '+d.volRetour:''}\nAssurance : ${assStr(d)}\nTotal : ${fmt(f.tc)} | Acompte réglé : ${fmt(f.acompte)} | Reste sur place : ${fmt(f.reste)} (en espèces)\nN° réservation : ${currentOrderId}\n${d.lieu==='aeroport'?'Inclure lien parking : https://share.google/Q89P0IKB67oOQuGNa':''}\n${d.lieu==='hotel'?'Inclure lien parking hôtel : https://maps.apple/p/-rcfD085WY4_iJ':''}\n${d.lieu==='port_nord'?'Inclure lien port Redon : https://maps.app.goo.gl/eKpEy2ptbWxhm1R38':''}\n${d.lieu==='port_sud'?'Inclure lien port Orestis : https://maps.app.goo.gl/wCNuDYorgRN2kUS89':''}\nSigne "Remy de Peyra Voyage".`;
+
+  if(tab==='client'){
+    const assLigneFR=d.assurance==='basique'?`Assurance : basique (incluse)`:`Assurance complète : ${Math.round(f.totalAss)} €`;
+    return`Bonjour ${prenom},
+
+Je te confirme ta réservation pour ton séjour à Zakynthos 🌊
+
+Véhicule : ${d.model} (ou similaire)
+Durée : ${d.nbJours} jour${d.nbJours>1?'s':''}
+Livraison ${lieuClientFR}
+• Prise en charge : ${dateS.fr} à ${d.heureStart}${d.volAller?' (vol '+d.volAller+')':''}
+• Retour : ${dateE.fr} à ${d.heureEnd} ${lieuRetourFR}${d.volRetour?' (vol '+d.volRetour+')':''}
+
+Récapitulatif :
+• Véhicule : ${Math.round(parseFloat(d.prixVente))} €
+• ${assLigneFR}
+Total : ${Math.round(f.tc)} €
+Dépôt déjà réglé : ${Math.round(f.acompte)} €
+Reste à payer sur place : ${Math.round(f.reste)} €
+
+Si tu as la moindre question n'hésites pas !${lienLieu}
+Remy de Peyra Voyage`;
+  }
+
   if(tab==='j1')
     return`Message rappel J-1 pour description event Google Calendar. Cadré "demain". Tutoiement. Signé "Remy de Peyra Voyage 💙💙".\nClient : ${d.client}\nType : ${d.type} — ${d.model}${d.bateauNom?' ('+d.bateauNom+')':''}\nDemain : ${d.dateStart} à ${d.heureStart} — ${lieuStr(d)}\nReste sur place : ${fmt(f.reste)} (en espèces)\n${d.partenaire?.includes('self')?'DEMANDER photo CNI/passeport de chaque participant.':''}\n${d.partenaire?.includes('skipper')?'NE PAS demander CNI/passeport.':''}`;
   if(tab==='calendar'){
@@ -513,7 +577,7 @@ async function generateAll(){
   if(!apiKey){openConfig();return;}
   currentOrderId=generateOrderId();
   goStep(4);
-  lastData=collectData();results={};
+  lastData=collectData();results={};saveSession();
   ['bannerSuccess','bannerCal','bannerSheet','bannerMail'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   for(let i=0;i<TABS.length;i++){
     document.getElementById('progressFill').style.width=Math.round((i/TABS.length)*100)+'%';
@@ -570,45 +634,101 @@ function getInvoiceData(){
 function buildPDF(inv){
   const{jsPDF}=window.jspdf;
   const doc=new jsPDF({unit:'mm',format:'a4'});
-  const W=210,blue='#1a6fa3',dark='#0d3d5c',grey='#6b7280',lgrey='#9ca3af';
-  doc.setDrawColor(blue);doc.setLineWidth(1.8);doc.circle(16,22,10);
-  doc.setLineWidth(1.2);doc.circle(16,22,7);
-  doc.setLineWidth(0.8);doc.circle(16,22,4);
-  doc.setFontSize(22);doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('PEYRA',30,19);
-  doc.setFontSize(11);doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.text('voyage',30,27);
-  doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('PEYRA VOYAGE',W-20,14,{align:'right'});
-  doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.setTextColor(lgrey);doc.text('A G E N C E  L O C A L E',W-20,20,{align:'right'});
-  doc.setFontSize(30);doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('FACTURE',W-20,38,{align:'right'});
-  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(lgrey);doc.text(inv.orderId||'',W-20,44,{align:'right'});
-  let y=60;
-  doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('NOM:',20,y);
-  doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.text(inv.nom||'',48,y);y+=9;
+  const W=210,H=297,blue='#1a6fa3',dark='#0d3d5c',grey='#6b7280',lgrey='#9ca3af';
+
+  // ── LEFT LOGO — exact template match ──
+  // Concentric arcs (top half only, like the real logo)
+  doc.setDrawColor(grey);doc.setFillColor(grey);
+  // Draw full circles in grey (logo color from template)
+  doc.setDrawColor('#8a9bb0');doc.setLineWidth(2.5);doc.circle(22,30,14);
+  doc.setLineWidth(1.8);doc.circle(22,30,10);
+  doc.setLineWidth(1.2);doc.circle(22,30,6);
+  doc.setLineWidth(0.7);doc.circle(22,30,3);
+  // PEYRA big bold text
+  doc.setFontSize(26);doc.setFont('helvetica','bold');doc.setTextColor(blue);
+  doc.text('PEYRA',14,52);
+  // voyage small italic
+  doc.setFontSize(11);doc.setFont('helvetica','normal');doc.setTextColor(grey);
+  doc.text('v o y a g e',15,60);
+
+  // ── RIGHT HEADER ──
+  doc.setFontSize(14);doc.setFont('helvetica','bold');doc.setTextColor(dark);
+  doc.text('PEYRA VOYAGE',W-20,18,{align:'right'});
+  doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.setTextColor(lgrey);
+  doc.text('A G E N C E  L O C A L E',W-20,24,{align:'right'});
+  // FACTURE big
+  doc.setFontSize(36);doc.setFont('helvetica','normal');doc.setTextColor(dark);
+  doc.text('FACTURE',W-20,48,{align:'right'});
+  // Order ID
+  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(lgrey);
+  doc.text(inv.orderId||'',W-20,55,{align:'right'});
+
+  // ── CLIENT INFO ──
+  let y=78;
+  doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(dark);
+  doc.text('NOM:',20,y);
+  doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.text(inv.nom||'',48,y);
+  y+=9;
   doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.text('DATE:',20,y);
   doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.text(inv.dateRange||'',48,y);
+
+  // ── TABLE ──
   y+=14;doc.setDrawColor(dark);doc.setLineWidth(0.4);doc.line(20,y,W-20,y);y+=7;
   doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(dark);
-  doc.text('DESCRIPTION',20,y);doc.text('MONTANT',118,y,{align:'center'});doc.text('JOURS',152,y,{align:'center'});doc.text('TOTAL',W-20,y,{align:'right'});
-  y+=4;doc.line(20,y,W-20,y);y+=9;
+  doc.text('DESCRIPTION',20,y);
+  doc.text('MONTANT',118,y,{align:'center'});
+  doc.text('JOURS',152,y,{align:'center'});
+  doc.text('TOTAL',W-20,y,{align:'right'});
+  y+=4;doc.setLineWidth(0.4);doc.line(20,y,W-20,y);y+=9;
+
+  // Row 1 - activité
   doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.setFontSize(10);
-  doc.text(inv.description||'',20,y);doc.text(`${inv.tarifJour}€`,118,y,{align:'center'});doc.text(String(inv.nbJours||1),152,y,{align:'center'});doc.text(`${inv.totalActivite}€`,W-20,y,{align:'right'});
+  doc.text(inv.description||'',20,y);
+  doc.text(`${inv.tarifJour}€`,118,y,{align:'center'});
+  doc.text(String(inv.nbJours||1),152,y,{align:'center'});
+  doc.text(`${inv.totalActivite}€`,W-20,y,{align:'right'});
   y+=14;
-  doc.text('Assurance complète',20,y);doc.text('(facultatif)',20,y+5);
-  if(inv.assuranceType==='Non'){doc.text('Non',118,y+2.5,{align:'center'});doc.text('X',152,y+2.5,{align:'center'});doc.text('0€',W-20,y+2.5,{align:'right'});}
-  else{doc.text(`${inv.assuranceJour}€`,118,y+2.5,{align:'center'});doc.text(String(inv.assuranceNbJours),152,y+2.5,{align:'center'});doc.text(`${inv.assuranceTotal}€`,W-20,y+2.5,{align:'right'});}
-  y+=20;doc.line(20,y,W-20,y);y+=10;
+
+  // Row 2 - assurance
+  doc.text('Assurance complète',20,y);
+  doc.text('(facultatif)',20,y+5);
+  if(inv.assuranceType==='Non'){
+    doc.text('Non',118,y+2.5,{align:'center'});
+    doc.text('X',152,y+2.5,{align:'center'});
+    doc.text('0€',W-20,y+2.5,{align:'right'});
+  }else{
+    doc.text(`${inv.assuranceJour}€`,118,y+2.5,{align:'center'});
+    doc.text(String(inv.assuranceNbJours),152,y+2.5,{align:'center'});
+    doc.text(`${inv.assuranceTotal}€`,W-20,y+2.5,{align:'right'});
+  }
+  y+=20;doc.setLineWidth(0.4);doc.line(20,y,W-20,y);y+=10;
+
+  // ── TOTALS ──
   doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.setFontSize(10);
-  doc.text('MONTANT PRÉPAYÉ',W-62,y,{align:'right'});doc.text(`${inv.acompte}€`,W-20,y,{align:'right'});y+=9;
-  doc.text('RESTE À PAYER SUR PLACE',W-62,y,{align:'right'});doc.text(`${inv.reste}€`,W-20,y,{align:'right'});y+=4;
-  doc.line(W-92,y,W-20,y);y+=16;
-  doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.setFontSize(11);doc.text('INFOS',20,y);y+=7;
+  doc.text('MONTANT PRÉPAYÉ',W-62,y,{align:'right'});
+  doc.text(`${inv.acompte}€`,W-20,y,{align:'right'});y+=9;
+  doc.text('RESTE À PAYER SUR PLACE',W-62,y,{align:'right'});
+  doc.text(`${inv.reste}€`,W-20,y,{align:'right'});y+=4;
+  doc.setLineWidth(0.4);doc.line(W-92,y,W-20,y);y+=16;
+
+  // ── INFOS ──
+  doc.setFont('helvetica','bold');doc.setTextColor(dark);doc.setFontSize(11);
+  doc.text('INFOS',20,y);y+=7;
   doc.setFont('helvetica','normal');doc.setTextColor(grey);doc.setFontSize(10);
   doc.text('Carte de débit acceptées',20,y);y+=6;
   doc.text('Pas de caution ou dépôt de garanties supplémentaire',20,y);y+=6;
   doc.text('20% du montant doit être payé avant la réservation pour confirmer',20,y);
-  const fy=277;doc.setDrawColor(dark);doc.setLineWidth(0.4);doc.line(20,fy-6,W-20,fy-6);
-  doc.setDrawColor(blue);doc.setLineWidth(1.2);doc.circle(W/2,fy+2,4.5);doc.setLineWidth(0.8);doc.circle(W/2,fy+2,2.8);doc.setLineWidth(0.5);doc.circle(W/2,fy+2,1.4);
+
+  // ── FOOTER ──
+  const fy=H-18;
+  doc.setDrawColor(dark);doc.setLineWidth(0.4);doc.line(20,fy-6,W-20,fy-6);
+  // Circle logo in footer
+  doc.setDrawColor(grey);doc.setLineWidth(1.5);doc.circle(W/2,fy,5.5);
+  doc.setLineWidth(1.0);doc.circle(W/2,fy,3.5);
+  doc.setLineWidth(0.6);doc.circle(W/2,fy,1.8);
   doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(lgrey);
-  doc.text('Peyra Voyage, 291 00 Zakynthos  —  +33 6 50 63 32 40  —  contact@peyravoyage.com',W/2,fy+10,{align:'center'});
+  doc.text('Peyra Voyage, 291 00 Zakynthos  -  +33 6 50 63 32 40  -  contact@peyravoyage.com',W/2,fy+9,{align:'center'});
+
   return doc;
 }
 function downloadPDF(){buildPDF(getInvoiceData()).save(`Facture - ${lastData?.client||'Client'}.pdf`);}
@@ -774,6 +894,86 @@ async function createCalendarEvents(){
 }
 
 // ─── RESET ────────────────────────────────────────────────────────
+
+// ─── SESSION PERSISTENCE ──────────────────────────────────────────
+function saveSession(){
+  try{
+    const session={
+      currentType,currentOrderId,
+      fields:{},
+      results,fd,
+      step:4
+    };
+    const fieldIds=['clientName','clientEmail','clientPhone','clientNat','vehicleModel','partenaire','bateauNom','dureeH','nbPax','zone','assurance','dateStart','heureStart','dateEnd','heureEnd','lieuStart','hotelName','volAller','volRetour','prixPartenaire','prixVente','notes'];
+    fieldIds.forEach(id=>{const el=document.getElementById(id);if(el)session.fields[id]=el.value;});
+    localStorage.setItem('peyra_session',JSON.stringify(session));
+  }catch(e){console.log('Session save error:',e);}
+}
+
+function saveFormSession(){
+  try{
+    const session=JSON.parse(localStorage.getItem('peyra_session')||'{}');
+    session.currentType=currentType;session.fd=fd;session.step=2;
+    const fieldIds=['clientName','clientEmail','clientPhone','clientNat','vehicleModel','partenaire','bateauNom','dureeH','nbPax','zone','assurance','dateStart','heureStart','dateEnd','heureEnd','lieuStart','hotelName','volAller','volRetour','prixPartenaire','prixVente','notes'];
+    session.fields=session.fields||{};
+    fieldIds.forEach(id=>{const el=document.getElementById(id);if(el)session.fields[id]=el.value;});
+    localStorage.setItem('peyra_session',JSON.stringify(session));
+  }catch(e){}
+}
+
+function restoreSession(){
+  try{
+    const raw=localStorage.getItem('peyra_session');
+    if(!raw)return;
+    const session=JSON.parse(raw);
+    if(!session.currentType)return;
+
+    // Restore type
+    currentType=session.currentType;fd=session.fd||{};
+    const typeBtn=document.querySelector(`.type-btn[data-type="${currentType}"]`);
+    if(typeBtn){typeBtn.classList.add('selected');adaptForm();}
+    document.getElementById('btnStep1').disabled=false;
+
+    // Restore fields
+    if(session.fields){
+      Object.entries(session.fields).forEach(([id,val])=>{
+        const el=document.getElementById(id);if(el)el.value=val;
+      });
+    }
+    detectNat();updateLieu();updateFinance();
+    if(session.fd?.nbJours){
+      const d=document.getElementById('daysText');
+      if(d){d.textContent=session.fd.nbJours+' jour'+(session.fd.nbJours>1?'s':'');}
+      document.getElementById('daysBadgeWrap').classList.remove('hidden');
+    }
+
+    // If we had results, go to step 4
+    if(session.results&&Object.keys(session.results).length>0){
+      results=session.results;
+      currentOrderId=session.currentOrderId;
+      lastData=collectData();
+      lastData.finance=session.fd?.finance||{};
+      goStep(4);
+      document.getElementById('progressFill').style.width='100%';
+      document.getElementById('bannerSuccess').classList.remove('hidden');
+      showTab('partenaire',document.querySelector('.tab'));
+      // Show restore notice
+      const notice=document.createElement('div');
+      notice.className='banner info';
+      notice.style.margin='0.75rem 1rem 0';
+      notice.innerHTML='<i class="ti ti-history"></i> Session restaurée — tu peux reprendre où tu en étais';
+      document.getElementById('step4').insertBefore(notice,document.getElementById('step4').firstChild);
+      setTimeout(()=>notice.remove(),4000);
+    }else{
+      goStep(2);
+    }
+  }catch(e){console.log('Session restore error:',e);}
+}
+
+function clearSession(){
+  localStorage.removeItem('peyra_session');
+}
+
 function newReservation(){
   // Keep client info for potential same-client reuse
   const keepClient={
@@ -782,6 +982,7 @@ function newReservation(){
     phone:document.getElementById('clientPhone')?.value||'',
     nat:document.getElementById('clientNat')?.value||''
   };
+  clearSession();
   currentType=null;results={};fd={};lastData=null;currentOrderId=null;
   document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById('btnStep1').disabled=true;
